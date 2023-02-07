@@ -91,9 +91,3 @@ export default class cartManager {
     }
 
 }
-const inst = new cartManager
-async function test() {
-
-    await inst.addToCart(1, 3)
-}
-//test()

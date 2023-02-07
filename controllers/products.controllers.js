@@ -8,7 +8,6 @@ export default class ProductManager {
     }
     async getProducts() {
         try {
-            console.log('llega');
             if (fs.existsSync(path)) {
                 const products = await fs.promises.readFile(path,'utf-8')
                 return JSON.parse(products)

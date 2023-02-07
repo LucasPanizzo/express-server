@@ -29,7 +29,7 @@ router.post('/:cid/product/:pid',async(req,res)=>{
         const productFound = await productList.find((el) => el.id === productId)
         if (productFound) {
             await inst.addToCart(cartId,productId)
-            res.send('Agregado')
+            res.send('Producto agregado con exito.')
         } else {
             res.send('El producto que quieres agregar no existe')
         }
