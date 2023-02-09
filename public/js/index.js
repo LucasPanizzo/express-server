@@ -29,9 +29,11 @@ function eliminarProducto(id){
     socketClient.emit('eliminacionProducto',id)
 }
 
-socketClient.on('writeProducts',(products)=>{
+socketClient.on('writeProducts',async (products)=>{
+    console.log('llega');
+    console.log(await products);
     let productList = ''
-    products.forEach((product)=>{
+    await products.forEach((product)=>{
         productList += `<div class="card" style="width: 18rem;">
         <div class="card-body">
           <h5 class="card-title">${product.title}</h5>

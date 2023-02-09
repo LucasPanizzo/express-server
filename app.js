@@ -18,20 +18,25 @@ const socketServer = new Server(httpServer)
 
 socketServer.on('connection',async(socket)=>{
     console.log('cliente conectado');
-    const products = await inst.getProducts()
-    socketServer.emit('writeProducts',products)
+    const productsList = await inst.getProducts()
+    socketServer.emit('writeProducts',productsList)
     
     socket.on('creacionProducto',async(obj)=>{
         const productsList = await inst.getProducts()
         if(await productsList.find((el) => el.code === obj.code)){
+            console.log(productsList);
             console.log('El producto que quieres agregar ya existe');
         } else{
         await inst.addProduct(obj)
+        const productsList = await inst.getProducts()
+        socketServer.emit('writeProducts',productsList)
         } 
     })
 
     socket.on('eliminacionProducto',async(id)=>{
         await inst.deleteProduct(id)
+        const productsList = await inst.getProducts()
+        socketServer.emit('writeProducts',await productsList)
     })
 })
 
