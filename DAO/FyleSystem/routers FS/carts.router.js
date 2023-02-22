@@ -1,6 +1,6 @@
 import { Router } from "express";
-import cartManager from "../DAO/MongoDB/db/controllers/carts.controllers.js";
-import ProductManager from "../DAO/MongoDB/db/controllers/products.controllers.js";
+import cartManager from "../controllers/carts.controllers.js";
+import ProductManager from "../controllers/products.controllers.js";
 
 const inst = new cartManager
 const inst2 = new ProductManager
@@ -13,7 +13,7 @@ router.post('/',async(req,res) =>{
 
 router.get('/:idCart',async(req,res) =>{
     const {idCart} = req.params
-    const searchedCart = await inst.getCartByID(idCart)
+    const searchedCart = await inst.getCartByID(parseInt(idCart))
     if (searchedCart) {
         res.json({message:'Carrito encontrado',searchedCart})
     } else {
@@ -21,11 +21,13 @@ router.get('/:idCart',async(req,res) =>{
     }
 })
 router.post('/:cid/product/:pid',async(req,res)=>{
-    const cartId = req.params.cid
-    const productId = req.params.pid
-    const cartFound = await inst.getCartByID(cartId)
+    const cartId = parseInt(req.params.cid)
+    const productId = parseInt(req.params.pid)
+    const cartsList = await inst.getCarts()
+    const productList = await inst2.getProducts()
+    const cartFound = await cartsList.find((el)=> el.id === cartId)
     if (cartFound) {
-        const productFound = await inst2.getProductsByID(productId)
+        const productFound = await productList.find((el) => el.id === productId)
         if (productFound) {
             await inst.addToCart(cartId,productId)
             res.send('Producto agregado con exito.')

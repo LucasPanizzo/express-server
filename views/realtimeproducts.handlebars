@@ -1,14 +1,16 @@
+<h1>Creador de productos:</h1>
 <form id="formulario">
-Title: <input type="text" name="title" id="title">
-Description: <input type="text" name="description" id="description">
-Price: <input type="number" name="price" id="price">
-Thumbnails: <input type="text" name="thumbnails" id="thumbnails">
-Code: <input type="text" name="code" id="code">
-Stock: <input type="number" name="stock" id="stock">
-Status: <input type="checkbox" name="status" id="status">
-category: <input type="text" name="category" id="category">
+Title: <input type="text" name="title" id="title" required>
+Description: <input type="text" name="description" id="description" required>
+Price: <input type="number" name="price" id="price" required>
+Thumbnails: <input type="text" name="thumbnails" id="thumbnails" required>
+Code: <input type="text" name="code" id="code" required>
+Stock: <input type="number" name="stock" id="stock" required>
+Status: <input type="text" name="status" id="status" required>
+category: <input type="text" name="category" id="category" required>
 <input type="submit" value="Crear Producto">
 </form>
+<h1>Lista de productos:</h1>
 <div id="card-container" class="card-container"></div>
 <script src="/socket.io/socket.io.js"></script>
-<script src="js/index.js"></script>
+<script src="js/index.js"></

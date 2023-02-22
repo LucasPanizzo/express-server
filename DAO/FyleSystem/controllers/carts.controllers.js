@@ -1,8 +1,5 @@
 import fs from 'fs'
 const path = './database/carts.json'
-const pathProducts = './database/products.json'
-
-
 
 export default class cartManager {
     constructor(path) {

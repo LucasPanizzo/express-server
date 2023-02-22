@@ -10,3 +10,12 @@
 .card-body{
     height: fit-content;
 }
+.title-prod{
+    display: block;
+    width: 100%;
+}
+.chatLayout{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}

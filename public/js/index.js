@@ -1,5 +1,8 @@
 const socketClient = io()
 
+// REALTIME PRODUCTS
+
+// Recuperaciones del DOM
 const form = document.getElementById('formulario')
 const inputTitle = document.getElementById('title')
 const inputDescription = document.getElementById('description')
@@ -10,27 +13,27 @@ const inputStock = document.getElementById('stock')
 const inputStatus = document.getElementById('status')
 const inputCategory = document.getElementById('category')
 const cardContainer = document.getElementById('card-container')
-
+// lógica para crear un producto con el form.
 form.onsubmit = (e)=>{
     e.preventDefault()
-    const title = inputTitle.value 
-    const description = inputDescription.value 
-    const price = parseInt(inputPrice.value) 
-    const thumbnails = inputThumbnails.value
-    const code = inputCode.value 
-    const stock = parseInt(inputStock.value) 
-    const status = inputStatus.value 
-    const category = inputCategory.value
-    console.log(stock);
-    socketClient.emit('creacionProducto',{title,description,price,thumbnails,code,stock,status,category})
+    const newProduct ={
+      title : inputTitle.value,
+      description : inputDescription.value,
+      price : parseInt(inputPrice.value),
+      thumbnails : inputThumbnails.value,
+      code : inputCode.value,
+      stock : parseInt(inputStock.value),
+      status : inputStatus.value,
+      category : inputCategory.value 
+    }
+    socketClient.emit('creacionProducto',newProduct)
 }
-
+// Funcion correspondiente a la elminación de un producto especifico.
 function eliminarProducto(id){
     socketClient.emit('eliminacionProducto',id)
 }
-
+// Funcion que escribe los productos en el DOM mediante una card.
 socketClient.on('writeProducts',async (products)=>{
-    console.log('llega');
     console.log(await products);
     let productList = ''
     await products.forEach((product)=>{
@@ -40,9 +43,10 @@ socketClient.on('writeProducts',async (products)=>{
           <h6 class="card-subtitle mb-2 text-muted">${product.price}</h6>
           <p class="card-text">${product.description}</p>
           <p class="card-text">${product.category}</p>
-          <button class="delete-butt" onclick="eliminarProducto(${product.id})">Eliminar producto</button>
+          <button class="delete-butt" onclick="eliminarProducto('${product._id}')">Eliminar producto</button>
         </div>
       </div>`
     })
     cardContainer.innerHTML = productList
 })
+

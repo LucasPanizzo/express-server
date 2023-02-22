@@ -1,11 +1,8 @@
 import { Router } from "express";
-
-import fs from 'fs';
-import ProductManager from "../controllers/products.controllers.js";
+import ProductManager from "../DAO/MongoDB/db/controllers/products.controllers.js";
 
 const inst = new ProductManager
 const router = Router()
-const path = './database/products.json'
 
 router.get('/',async(req,res)=>{
     let products = await inst.getProducts()
@@ -15,4 +12,10 @@ router.get('/',async(req,res)=>{
 router.get('/realtimeproducts',async(req,res)=>{
     res.render('realtimeproducts')
 })
+
+
+router.get('/chathandlebars',async(req,res)=>{
+    res.render('chat')
+})
+
 export default router
