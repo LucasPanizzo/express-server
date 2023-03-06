@@ -11,7 +11,6 @@ export default class messageManager{
     }
     async newMessage(obj){
         try {
-
            const newMessage = await messageModels.create(obj)
            return newMessage
         } catch (error) {

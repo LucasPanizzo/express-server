@@ -1,14 +1,14 @@
 import { Router } from "express";
 import ProductManager from "../DAO/MongoDB/db/controllers/products.controllers.js";
+import { productsModels } from "../DAO/MongoDB/db/models/products.models.js";
 
 const inst = new ProductManager
 const router = Router()
 
 router.get('/', async (req,res)=>{
-    const productList = await inst.getProducts()
-    const {limit} = req.query
-    const productosLimit = productList.slice(0,limit)
-    res.json({productList:productosLimit})
+    const {page=1, limit=10, category,status} = req.query
+    const products = await productsModels.paginate({category:category,status:status},{limit,page})
+    res.json({products})
 })
 
 router.get('/:idProduct',async (req,res)=>{
@@ -56,6 +56,12 @@ router.put('/:idProduct',async (req,res)=>{
     } else {
         res.send('Producto a modificar no encontrado en la base de datos.')
     }
+})
+
+router.get('/pagination',async(req,res)=>{
+    const {page=1, limit=10, category,status} = req.query
+    const products = await productsModels.paginate({category:category,status:status},{limit,page})
+    res.json({products})
 })
 
 export default router

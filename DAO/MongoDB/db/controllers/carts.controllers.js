@@ -1,4 +1,5 @@
 import { cartsModels } from "../models/carts.models.js";
+import mongoose from "mongoose";
 
 export default class cartManager {
 
@@ -12,7 +13,7 @@ export default class cartManager {
     }
     async getCartByID(id) {
         try {
-            const cart = await cartsModels.findById(id)
+            const cart = await cartsModels.find({_id:id})
             return cart
         } catch (error) {
             console.log(error)
@@ -28,25 +29,17 @@ export default class cartManager {
     }
     async addToCart(idCart, idProduct) {
         try {
-            const cart = await this.getCartByID(idCart)
+
+            const cart = await cartsModels.findById(idCart)
             const arrayProds = cart.products
-            const exists = await arrayProds.find((el) => el.idProduct === idProduct)
-            console.log(exists);
+            const exists = cart.products.find((el) => el._id.toHexString() === idProduct)
             if (exists) {
-                const add = exists.quantity + 1
-                const act = { "quantity": add }
-                const objAct = { ...exists, ...act }
-                arrayProds.splice(arrayProds.indexOf(exists), 1)
-                arrayProds.push(objAct)
-                const added = await cartsModels.updateOne({_id:idCart},{products:arrayProds})
-                return added
+                // logica que modifica la cantidad.
             } else {
-                const quantity = 1
-                const prodArray = { idProduct, quantity }
-                arrayProds.push(prodArray)
-                const added = await cartsModels.updateOne({_id:idCart},{products:arrayProds})
-                return added
-            }
+                arrayProds.push(idProduct)
+                cart.save()
+                return cart
+             }
         } catch (error) {
             console.log(error)
         }

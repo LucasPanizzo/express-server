@@ -5,7 +5,8 @@ const inst = new ProductManager
 const router = Router()
 
 router.get('/',async(req,res)=>{
-    let products = await inst.getProducts()
+    const {page=1, limit=10, category,status} = req.query
+    let products = await inst.getProducts().paginate({category:category,status:status},{limit,page})
     res.render('index',{products})
 })
 

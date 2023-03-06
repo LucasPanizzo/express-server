@@ -9,14 +9,15 @@ import products from './routers/products.router.js'
 import carts from './routers/carts.router.js'
 import { __dirname } from './utilities.js'
 import './DAO/MongoDB/db/dbConfig.js'
+import mongoose from 'mongoose'
 // Declarations
 const app = express()
-const port = 8080
+const port = 3030
 const inst = new ProductManager
 const message = new messageManager
 // Server
 const httpServer = app.listen(port,()=>{
-    console.log('Listening to port 8080');
+    console.log('Listening to port '+port);
 })
 const socketServer = new Server(httpServer)
 // Socket configuration
