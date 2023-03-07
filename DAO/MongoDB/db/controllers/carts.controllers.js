@@ -29,12 +29,13 @@ export default class cartManager {
     }
     async addToCart(idCart, idProduct) {
         try {
-
             const cart = await cartsModels.findById(idCart)
             const arrayProds = cart.products
-            const exists = cart.products.find((el) => el._id.toHexString() === idProduct)
+            const exists = this.findProductInCart(idCart,idProduct)
             if (exists) {
-                // logica que modifica la cantidad.
+                exists.quantity ++
+                cart.save()
+                return cart
             } else {
                 arrayProds.push(idProduct)
                 cart.save()
@@ -44,5 +45,49 @@ export default class cartManager {
             console.log(error)
         }
     }
-
+    async deleteProduct(idCart,idProduct){
+        try {
+            const cart = await cartsModels.findById(idCart)
+            const arrayProds = cart.products
+            const productoBorrado = arrayProds.find((el) => el._id.toHexString() === idProduct)
+            const index = arrayProds.indexOf(productoBorrado)
+            arrayProds.splice(index,1)
+            cart.save()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    async modifyQuantity(idCart,idProduct,quantity){
+        try {
+            const cart = await cartsModels.findById(idCart)
+            const arrayProds = cart.products
+            const productoModificado = arrayProds.find((el) => el._id.toHexString() === idProduct)
+            productoModificado.quantity = quantity
+            cart.save()
+            return cart
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    async emptyCart(idCart){
+        const cart = await cartsModels.findById(idCart)
+        cart.products = []
+        cart.save()
+        return cart
+    }
+    async findProductInCart(idCart,idProduct){
+        const cart = await cartsModels.findById(idCart)
+        const arrayProds = cart.products
+        const exists = arrayProds.find((el) => el._id.toHexString() === idProduct)
+        return exists
+    }
+    async updateProductsIncart(productos,idCart){
+        const updatedCart = await cartsModels.findById(idCart)
+        this.emptyCart(idCart)
+        productos.forEach(element => {
+            updatedCart.products.push(element)
+        });
+        updatedCart.save()
+        return updatedCart
+    }
 }

@@ -1,18 +1,38 @@
+import { query } from "express";
 import { productsModels } from "../models/products.models.js"
 export default class ProductManager {
-
-    async getProducts() {
+    async getProducts(limit,page,sort,query) {
         try {
-            const products = await productsModels.find({}).lean()
-            return products
+            const objects = {
+                limit: parseInt(limit) || 10,
+                page: parseInt(page) || 1,
+                sort: parseInt(sort) ? {price:sort} : {},
+
+            }
+            const queryes = query || {}
+            const products = await productsModels.paginate(queryes,objects)
+            const productsInfo= {
+                status:"success",
+                payload: products.docs,
+                info:{totalpages:products.totalPages,
+                    prevPage:products.prevPage,
+                    nextPage:products.nextPage,
+                    page:products.page,
+                    hasPrevPage:products.hasPrevPage,
+                    hasNextPage:products.hasNextPage,
+                    prevLink:products.hasPrevPage ? `http://localhost:8080/api/products?limit=${limit}&page=${products.prevPage}` : null,
+                    nextLink:products.hasNextPage ? `http://localhost:8080/api/products?limit=${limit}&page=${products.nextPage}` : null}
+            }
+            return productsInfo
         } catch (error) {
             console.log(error);
         }
     }
     async addProduct(obj) {
         try {
-            const newProduct = await productsModels.create(obj)
-            return newProduct
+            const newProduct = new productsModels(obj)
+            const productSaved = newProduct.save()
+            return productSaved
         } catch (error) {
             console.log(error);
         }
@@ -41,4 +61,29 @@ export default class ProductManager {
             console.log(error)
         }
     }
+    async aggregationFunction(sortVal){
+        try {
+            console.log(sortVal);
+            if (sortVal === 1 || sortVal === -1) {
+                console.log('if');
+                const products = await productsModels.aggregate([
+                    {
+                        $sort: {price:sortVal}
+                    }
+                    
+                ])
+                return products
+            } else {
+                console.log('else');
+                const products = this.getProducts() 
+                return products 
+            }
+
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
+
+

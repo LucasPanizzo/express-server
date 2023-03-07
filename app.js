@@ -12,7 +12,7 @@ import './DAO/MongoDB/db/dbConfig.js'
 import mongoose from 'mongoose'
 // Declarations
 const app = express()
-const port = 3030
+const port = 8080
 const inst = new ProductManager
 const message = new messageManager
 // Server
@@ -61,6 +61,7 @@ app.set('views',__dirname+'/views')
 app.set('view engine','handlebars')
 // General APP declarations
 app.use(express.json())
+app.use(express.text())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname+'/public'))
 app.use('/api/products', products)

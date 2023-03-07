@@ -1,14 +1,21 @@
-import { Router } from "express";
+import { query, Router } from "express";
 import ProductManager from "../DAO/MongoDB/db/controllers/products.controllers.js";
 import { productsModels } from "../DAO/MongoDB/db/models/products.models.js";
 
+const categorys = [
+    'Apple','Samsung','Xiaomi','Motorola'
+]
 const inst = new ProductManager
 const router = Router()
 
 router.get('/', async (req,res)=>{
-    const {page=1, limit=10, category,status} = req.query
-    const products = await productsModels.paginate({category:category,status:status},{limit,page})
-    res.json({products})
+try {
+    const {limit,page,sort,...query} = req.query
+    const products = await inst.getProducts(limit,page,sort,query)
+    res.send(products)
+} catch (error) {
+    console.log(error);
+}
 })
 
 router.get('/:idProduct',async (req,res)=>{
@@ -23,8 +30,8 @@ router.get('/:idProduct',async (req,res)=>{
 
 router.post('/',async(req,res) =>{
     const productsList = await inst.getProducts()
-    if (!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.status || !req.body.stock || !req.body.category || !req.body.thumbnails) {
-        res.send('Debes completar todos los campos necesarios para crear un producto. Estos son: title,description,code,price,status,stock,category y thumbnails.');
+    if (!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.stock|| !req.body.status || !req.body.category || !req.body.thumbnails) {
+        res.send('Debes completar todos los campos necesarios para crear un producto. Estos son: title,description,code,price,stock,category,status y thumbnails.');
     } else {
         if(productsList.find((el) => el.code === req.body.code)){
             res.send(`El producto con el code: ${req.body.code} ya existe.`);
@@ -58,9 +65,9 @@ router.put('/:idProduct',async (req,res)=>{
     }
 })
 
-router.get('/pagination',async(req,res)=>{
-    const {page=1, limit=10, category,status} = req.query
-    const products = await productsModels.paginate({category:category,status:status},{limit,page})
+router.get('/test/test',async(req,res)=>{
+    const sort = parseInt(req.query.sort)
+    const products = await inst.aggregationFunction(sort)
     res.json({products})
 })
 
