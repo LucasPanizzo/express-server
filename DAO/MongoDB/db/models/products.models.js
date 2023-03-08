@@ -1,6 +1,5 @@
 import mongoose from "mongoose"
 import mongoosePaginate from 'mongoose-paginate-v2'
-import toJSON from "@meanie/mongoose-to-json"
 
 const productsSchema = new mongoose.Schema({
     title:{
@@ -39,6 +38,5 @@ const productsSchema = new mongoose.Schema({
     },
 })
 productsSchema.plugin(mongoosePaginate)
-productsSchema.plugin(toJSON)
 
 export const productsModels = mongoose.model('products',productsSchema)

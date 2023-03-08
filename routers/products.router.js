@@ -1,10 +1,6 @@
-import { query, Router } from "express";
+import {Router } from "express";
 import ProductManager from "../DAO/MongoDB/db/controllers/products.controllers.js";
-import { productsModels } from "../DAO/MongoDB/db/models/products.models.js";
 
-const categorys = [
-    'Apple','Samsung','Xiaomi','Motorola'
-]
 const inst = new ProductManager
 const router = Router()
 
@@ -29,7 +25,8 @@ router.get('/:idProduct',async (req,res)=>{
 })
 
 router.post('/',async(req,res) =>{
-    const productsList = await inst.getProducts()
+    const products = await inst.getProducts()
+    const productsList = products.payload
     if (!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.stock|| !req.body.status || !req.body.category || !req.body.thumbnails) {
         res.send('Debes completar todos los campos necesarios para crear un producto. Estos son: title,description,code,price,stock,category,status y thumbnails.');
     } else {

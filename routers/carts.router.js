@@ -26,7 +26,7 @@ router.post('/:cid/product/:pid',async(req,res)=>{
     const productId = req.params.pid
     const cartFound = await inst.getCartByID(cartId)
     if (cartFound) {
-        const productFound = await inst2.findProductInCart(cartId,productId)
+        const productFound = await inst2.getProductsByID(productId)
         if (productFound) {
             await inst.addToCart(cartId,productId)
             res.send('Producto agregado con exito.')
@@ -73,7 +73,7 @@ router.put('/:cid/product/:pid',async(req,res)=>{
     if (cartFound) {
         const productFound = await inst2.findProductInCart(cartId,productId)
         if (productFound) {
-            await inst.modifyQuantity(cartId,productId,quantity)
+            await inst.modifyProductQuantity(cartId,productId,quantity)
             res.send('Cantidad modificada con exito.')
         } else {
             res.send('El producto que quieres eliminar no existe')
@@ -84,8 +84,8 @@ router.put('/:cid/product/:pid',async(req,res)=>{
 })
 router.put('/:cid',async(req,res)=>{
     const cartId = req.params.cid
-    const productos = req.body
-    await inst.updateProductsIncart(productos,cartId)
+    const products = req.body
+    await inst.updateProductsInCart(products,cartId)
     res.send('Carrito modificado con exito.')
 })
 export default router

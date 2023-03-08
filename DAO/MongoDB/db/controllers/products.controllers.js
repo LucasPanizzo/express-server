@@ -1,4 +1,3 @@
-import { query } from "express";
 import { productsModels } from "../models/products.models.js"
 export default class ProductManager {
     async getProducts(limit,page,sort,query) {
@@ -25,7 +24,11 @@ export default class ProductManager {
             }
             return productsInfo
         } catch (error) {
-            console.log(error);
+            const productsInfo = {
+                status : "error",
+                error : error
+            }
+            return productsInfo
         }
     }
     async addProduct(obj) {
@@ -59,29 +62,6 @@ export default class ProductManager {
             return updateProduct
         } catch (error) {
             console.log(error)
-        }
-    }
-    async aggregationFunction(sortVal){
-        try {
-            console.log(sortVal);
-            if (sortVal === 1 || sortVal === -1) {
-                console.log('if');
-                const products = await productsModels.aggregate([
-                    {
-                        $sort: {price:sortVal}
-                    }
-                    
-                ])
-                return products
-            } else {
-                console.log('else');
-                const products = this.getProducts() 
-                return products 
-            }
-
-
-        } catch (error) {
-            console.log(error);
         }
     }
 }
