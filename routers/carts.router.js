@@ -14,7 +14,7 @@ router.post('/',async(req,res) =>{
 
 router.get('/:idCart',async(req,res) =>{
     const {idCart} = req.params
-    const searchedCart = await inst.getCartByID(idCart)
+    const searchedCart = await inst.findCartAndPoblate(idCart)
     if (searchedCart) {
         res.json({message:'Carrito encontrado',searchedCart})
     } else {
@@ -68,10 +68,9 @@ router.put('/:cid/product/:pid',async(req,res)=>{
     const cartId = req.params.cid
     const productId = req.params.pid
     const quantity = parseInt(req.body)
-    console.log(quantity);
     const cartFound = await inst.getCartByID(cartId)
     if (cartFound) {
-        const productFound = await inst2.findProductInCart(cartId,productId)
+        const productFound = await inst.findProductInCart(cartId,productId)
         if (productFound) {
             await inst.modifyProductQuantity(cartId,productId,quantity)
             res.send('Cantidad modificada con exito.')

@@ -62,10 +62,4 @@ router.put('/:idProduct',async (req,res)=>{
     }
 })
 
-router.get('/test/test',async(req,res)=>{
-    const sort = parseInt(req.query.sort)
-    const products = await inst.aggregationFunction(sort)
-    res.json({products})
-})
-
 export default router

@@ -8,7 +8,8 @@ router.get('/', async (req,res)=>{
     const {limit,page,sort,...query} = req.query
     const products = await inst.getProducts(limit,page,sort,query)
     const productsPayload = products.payload
-    res.render('index',productsPayload)
+    console.log(productsPayload);
+    res.render('index',{productsPayload})
 })
 
 router.get('/realtimeproducts',async(req,res)=>{
