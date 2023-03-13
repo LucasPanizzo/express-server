@@ -5,11 +5,7 @@ const inst = new ProductManager
 const router = Router()
 
 router.get('/', async (req,res)=>{
-    const {limit,page,sort,...query} = req.query
-    const products = await inst.getProducts(limit,page,sort,query)
-    const productsPayload = products.payload
-    console.log(productsPayload);
-    res.render('index',{productsPayload})
+    res.render('index')
 })
 
 router.get('/realtimeproducts',async(req,res)=>{
@@ -19,6 +15,10 @@ router.get('/realtimeproducts',async(req,res)=>{
 
 router.get('/chathandlebars',async(req,res)=>{
     res.render('chat')
+})
+
+router.get('/cart',(req,res)=>{
+    res.render('cart')
 })
 
 export default router

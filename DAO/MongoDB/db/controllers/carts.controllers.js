@@ -20,7 +20,7 @@ export default class cartManager {
     }
     async findCartAndPoblate(id) {
         try {
-            const cart = await cartsModels.find({_id:id})
+            const cart = await cartsModels.find({_id:id}).lean()
             return cart
         } catch (error) {
             console.log(error)
@@ -38,7 +38,7 @@ export default class cartManager {
         try {
             const cart = await this.getCartByID(idCart)
             const productsArray = cart.products
-            const productExists = productsArray.find((el) => el._id.toHexString() === idProduct)
+            const productExists = productsArray.find((el) => el.productId.toHexString() === idProduct)
             return productExists
         } catch (error) {
             console.log(error);
@@ -54,7 +54,11 @@ export default class cartManager {
                 const actCart = await this.modifyProductQuantity(idCart,idProduct,newQuantity)
                 return actCart
             } else {
-                productsArray.push(idProduct)
+                const product = {
+                    quantity:1,
+                    productId:idProduct
+                }
+                productsArray.push(product)
                 await cart.save()
                 return cart
             }
@@ -65,31 +69,36 @@ export default class cartManager {
     async deleteProduct(idCart,idProduct){
         try {
             const cart = await this.getCartByID(idCart)
-            const productsArray = cart.products
-            const deletedProduct = await this.findProductInCart(idCart,idProduct)
-            const productIndex = productsArray.indexOf(deletedProduct)
-            productsArray.splice(productIndex,1)
-            await cart.save()
-            return cart
+            const productToDeleteIndex = cart.products.findIndex(e => e.productId == idProduct)
+                
+                if (productToDeleteIndex !== -1) {
+                    cart.products.splice(productToDeleteIndex,1);
+                    const updatedCart = await cart.save()
+                    return updatedCart
+                }
+                else{
+                    return undefined
+                }
+        //     const cart = await this.getCartByID(idCart)
+        //     const productsArray = cart.products
+        //     const deletedProduct = await this.findProductInCart(idCart,idProduct)
+        //     const productIndex = productsArray.indexOf(deletedProduct)
+        //     productsArray.splice(productIndex,1)
+        //     console.log(productIndex);
+        //     await cart.save()
+        //     return cart
         } catch (error) {
             console.log(error);
         }
     }
-    async modifyProductQuantity(idCart,idProduct,quantity){
+    async modifyProductQuantity(cid,pid,quantity){
         try {
-            const cart = await this.getCartByID(idCart)
-            const productsArray = cart.products
-            const modifiedProduct = await this.findProductInCart(idCart,idProduct)
-            await this.deleteProduct(idCart,modifiedProduct._id)
-            const newQuantity = {
-                "quantity": quantity,
-                "_id":idProduct
-            }
-            productsArray.push(newQuantity)
-            await cart.save()
-            return cart
+            const filter = {_id:cid, "products.productId":pid};
+            const update = { $set: {"products.$.quantity": quantity}}
+            const updatedCartProduct = await cartsModels.findOneAndUpdate(filter,update,{new:true});
+            return updatedCartProduct
         } catch (error) {
-            console.log(error);
+            console.log(error)
         }
     }
     async emptyCart(idCart){

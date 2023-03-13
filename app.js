@@ -2,6 +2,7 @@
 import express from 'express'
 import ProductManager from './DAO/MongoDB/db/controllers/products.controllers.js'
 import messageManager from './DAO/MongoDB/db/controllers/chat.controllers.js'
+import cartManager from './DAO/MongoDB/db/controllers/carts.controllers.js'
 import { Server } from 'socket.io'
 import handlebars from 'express-handlebars'
 import views from './routers/views.router.js'
@@ -14,6 +15,7 @@ const app = express()
 const port = 3030
 const inst = new ProductManager
 const message = new messageManager
+const cart = new cartManager
 // Server
 const httpServer = app.listen(port,()=>{
     console.log('Listening to port '+port);
@@ -26,7 +28,8 @@ socketServer.on('connection',async(socket)=>{
     console.log('cliente conectado');
     //REALTIME PRODUCTS
         //Funcion que escribe los productos en el DOM
-    const productsList = await inst.getProducts()
+    const products = await inst.getProducts()
+    const productsList = products.payload
     socketServer.emit('writeProducts',productsList)
     //Funcion que crea el producto que le llega.
     socket.on('creacionProducto',async(obj)=>{
@@ -44,6 +47,10 @@ socketServer.on('connection',async(socket)=>{
         await inst.deleteProduct(id)
         const productsList = await inst.getProducts()
         socketServer.emit('writeProducts',productsList)
+    })
+    //Funcion que agrega al carrito el producto seleccionado, le marco la id de forma manual, no tiene sentido hacerlo con la herramienta que tengo ahora para que cada vez que se cargue el page se cree un carrito nuevo. Cuando empiece a trabajar con Sessions creare un cart para cada Session en particular.
+    socket.on('añadirAlCarrito',async(id)=>{
+        await cart.addToCart("640f8156f6d8813b3d9e580e",id)
     })
     // CHAT 
     socket.on('mensaje',async info=>{

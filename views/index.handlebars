@@ -1,16 +1,4 @@
 <h1 class="title-prod">Lista de productos:</h1>
-{{#if products.length}}
-{{#each products}}
-<div class="card" style="width: 18rem;">
-  <div class="card-body">
-    <h5 class="card-title">{{title}}</h5>
-    <h6 class="card-subtitle mb-2 text-muted">${{price}}</h6>
-    <p class="card-text">{{description}}</p>
-    <p class="card-text">{{category}}</p>
-  </div>
-</div>
-{{/each}}
+<div id="card-container" class="card-container"></div>
 
-{{else}}
-<h2>No se encuentra la lista de productos</h2>
-{{/if}}
+<script src="js/products.js"></script>

@@ -32,9 +32,11 @@ form.onsubmit = (e)=>{
 function eliminarProducto(id){
     socketClient.emit('eliminacionProducto',id)
 }
+function añadirAlCarrito(id){
+  socketClient.emit('añadirAlCarrito',id)
+}
 // Funcion que escribe los productos en el DOM mediante una card.
 socketClient.on('writeProducts',async (products)=>{
-    console.log(await products);
     let productList = ''
     await products.forEach((product)=>{
         productList += `<div class="card" style="width: 18rem;">
@@ -44,6 +46,7 @@ socketClient.on('writeProducts',async (products)=>{
           <p class="card-text">${product.description}</p>
           <p class="card-text">${product.category}</p>
           <button class="delete-butt" onclick="eliminarProducto('${product._id}')">Eliminar producto</button>
+          <button class="add-butt" onclick="añadirAlCarrito('${product._id}')">Añadir al carrito</button>
         </div>
       </div>`
     })

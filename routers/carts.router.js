@@ -1,4 +1,3 @@
-import { log } from "console";
 import { Router } from "express";
 import cartManager from "../DAO/MongoDB/db/controllers/carts.controllers.js";
 import ProductManager from "../DAO/MongoDB/db/controllers/products.controllers.js";
@@ -16,7 +15,8 @@ router.get('/:idCart',async(req,res) =>{
     const {idCart} = req.params
     const searchedCart = await inst.findCartAndPoblate(idCart)
     if (searchedCart) {
-        res.json({message:'Carrito encontrado',searchedCart})
+        const cartProducts = searchedCart[0].products
+        res.json({message:'Carrito encontrado',cartProducts})
     } else {
         res.send('El carrito buscado no existe en la base de datos.')
     }
