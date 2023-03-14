@@ -8,8 +8,11 @@ import handlebars from 'express-handlebars'
 import views from './routers/views.router.js'
 import products from './routers/products.router.js'
 import carts from './routers/carts.router.js'
+import users from './routers/users.router.js'
 import { __dirname } from './utilities.js'
 import './DAO/MongoDB/db/dbConfig.js'
+import session from 'express-session'
+import MongoStore from 'connect-mongo'
 // Declarations
 const app = express()
 const port = 3030
@@ -73,3 +76,15 @@ app.use(express.static(__dirname+'/public'))
 app.use('/api/products', products)
 app.use('/api/carts', carts)
 app.use('/',views)
+app.use('/api/users',users)
+
+app.use(
+    session({
+      secret: 'secretKey',
+      resave: false,
+      saveUninitialized: true,
+      store: new MongoStore({
+        mongoUrl: 'mongodb+srv://lucaspanizzo99:Panizzo99@coderhouse.3xliklk.mongodb.net/ecommerce?retryWrites=true&w=majority'
+      }),
+    })
+  )

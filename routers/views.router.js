@@ -4,7 +4,19 @@ import ProductManager from "../DAO/MongoDB/db/controllers/products.controllers.j
 const inst = new ProductManager
 const router = Router()
 
-router.get('/', async (req,res)=>{
+router.get('/',(req,res)=>{
+    res.render('login')
+})
+
+router.get('/registro',(req,res)=>{
+    res.render('register')
+})
+
+router.get('/perfil',(req,res)=>{
+    res.render('profile')
+})
+
+router.get('/products', async (req,res)=>{
     res.render('index')
 })
 

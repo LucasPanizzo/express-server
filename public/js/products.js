@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             cardContainer.innerHTML = productsList
 
             let addToCart = document.querySelectorAll(".add-butt")
-            console.log(addToCart);
 
             addToCart.forEach((button) => {
                 const productId = button.id
@@ -30,6 +29,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     await fetch(`/api/carts/640f8156f6d8813b3d9e580e/product/${productId}`,{method:"POST"});
                 });
             });
+
+            let logout = document.getElementById("logout")
+            logout.addEventListener("click",async()=>{
+                await fetch('/api/users/logout')
+            })
         })
 
 })
