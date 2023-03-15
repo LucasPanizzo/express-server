@@ -4,9 +4,11 @@ import { userManager } from "../DAO/MongoDB/db/controllers/users.controllers.js"
 const router = Router()
 const userManagement = new userManager()
 
-router.get("/",(req,res)=>{
+router.get("/", async (req,res)=>{
     res.json(req.session)
 })
+
+
 router.post('/register',async(req,res)=>{
     try {
         console.log(req.body);
@@ -34,7 +36,7 @@ router.post('/login',async(req,res)=>{
         const {email,password} = req.body
         const userLoged = await userManagement.getUser(email,password)
         if (userLoged) {
-            console.log(userLoged);
+            req.session.userInfo = userLoged
             res.redirect("/products")
         } else {
             res.render("loginWrong")
@@ -46,8 +48,10 @@ router.post('/login',async(req,res)=>{
 
 router.get('/logout',(req,res)=>{
     try {
-        req.session.destroy()
-        console.log('destroyed');
+        req.session.destroy((error) => {
+          if (error) console.log(error)
+          res.redirect('/')
+        })
     } catch (error) {
         console.log(error);
     }

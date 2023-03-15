@@ -23,7 +23,7 @@ export class userManager {
                 }
                 return userAdmin
             } else {
-                const user = await usersModels.find({ email, password })
+                const user = await usersModels.findOne({email:email,password:password})
                 if (user.length !== 0) {
                     return user
                 } else {

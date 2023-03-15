@@ -1,6 +1,8 @@
 <h1 class="title-prod">Lista de productos:</h1>
- <h3>Hola {{email}}</h3>
-<button id="logout" onclick="location.href='/'">Cerrar Sesion</button>
+ <h3>Bienvenido, {{first_name}} {{last_name}}. Tu rol es: {{rol}}</h3>
+<button onclick="location.href='/api/users/logout'">Cerrar Sesion</button>
+<button  onclick="location.href='/perfil'">Ver perfil</button>
+<button  onclick="location.href='/cart'">Ver cart</button>
 <div id="card-container" class="card-container"></div>
 
 <script src="js/products.js"></script>

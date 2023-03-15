@@ -13,11 +13,11 @@ router.get('/registro',(req,res)=>{
 })
 
 router.get('/perfil',(req,res)=>{
-    res.render('profile')
+    res.render('profile',req.session.userInfo)
 })
 
 router.get('/products', async (req,res)=>{
-    res.render('index')
+    res.render('index',req.session.userInfo)
 })
 
 router.get('/realtimeproducts',async(req,res)=>{

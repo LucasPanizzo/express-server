@@ -1,7 +1,14 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
     const cardContainer = document.getElementById('card-container')
-    fetch("/api/products", {method:"GET"})
+    const options = {
+        method: "GET",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            credentials: "include"
+        },
+    };
+    fetch("/api/products", options)
         .then((res) => res.json())
         .then((res) => {
             const products = res.payload
@@ -30,10 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
             });
 
-            let logout = document.getElementById("logout")
-            logout.addEventListener("click",async()=>{
-                await fetch('/api/users/logout')
-            })
+
         })
 
 })

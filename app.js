@@ -69,15 +69,6 @@ app.engine('handlebars',handlebars.engine())
 app.set('views',__dirname+'/views')
 app.set('view engine','handlebars')
 // General APP declarations
-app.use(express.json())
-app.use(express.text())
-app.use(express.urlencoded({extended:true}))
-app.use(express.static(__dirname+'/public'))
-app.use('/api/products', products)
-app.use('/api/carts', carts)
-app.use('/',views)
-app.use('/api/users',users)
-
 app.use(
     session({
       secret: 'secretKey',
@@ -88,3 +79,11 @@ app.use(
       }),
     })
   )
+app.use(express.json())
+app.use(express.text())
+app.use(express.urlencoded({extended:true}))
+app.use(express.static(__dirname+'/public'))
+app.use('/api/products', products)
+app.use('/api/carts', carts)
+app.use('/',views)
+app.use('/api/users',users)
