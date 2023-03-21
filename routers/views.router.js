@@ -16,6 +16,14 @@ router.get('/perfil',(req,res)=>{
     res.render('profile',req.session.userInfo)
 })
 
+router.get('/loginWrong',(req,res)=>{
+    res.render('loginWrong')
+})
+
+router.get('/registerWrong',(req,res)=>{
+    res.render('registerWrong')
+})
+
 router.get('/products', async (req,res)=>{
     res.render('index',req.session.userInfo)
 })

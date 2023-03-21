@@ -1,10 +1,13 @@
 import { usersModels } from "../models/users.models.js";
+import { cryptedPassword,comparePasswords } from "../../../../utilities.js";
 
 export class userManager {
     async createUser(userData) {
         try {
-            console.log(userData);
-            const newUser = await usersModels.create(userData)
+            const {password} = userData
+            const newPassword = await cryptedPassword(password)
+            const cryptedUser = {...userData,password:newPassword}
+            const newUser = await usersModels.create(cryptedUser)
             return newUser
         } catch (error) {
             console.log(error);
@@ -23,15 +26,20 @@ export class userManager {
                 }
                 return userAdmin
             } else {
-                const user = await usersModels.findOne({email:email,password:password})
-                if (user.length !== 0) {
-                    return user
-                } else {
+                const user = await usersModels.findOne({email:email})
+                if (user) {
+                    const realPassword = await comparePasswords(password,user.password)
+                    if (realPassword) {
+                        return user
+                    } else{
+                        return null
+                    }
+                } else{
                     return null
-                }
+                    }
             }
         } catch (error) {
-
+            console.log(error);
         }
     }
 }

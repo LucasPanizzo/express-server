@@ -13,6 +13,8 @@ import { __dirname } from './utilities.js'
 import './DAO/MongoDB/db/dbConfig.js'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import passport from 'passport'
+import './passport/passportStrategies.js'
 // Declarations
 const app = express()
 const port = 3030
@@ -87,3 +89,6 @@ app.use('/api/products', products)
 app.use('/api/carts', carts)
 app.use('/',views)
 app.use('/api/users',users)
+
+app.use(passport.initialize())
+app.use(passport.session())

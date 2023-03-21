@@ -11,7 +11,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     fetch("/api/products", options)
         .then((res) => res.json())
         .then((res) => {
+            
             const products = res.payload
+            console.log(products);
             let productsList = ""
             products.forEach((product)=>{
                 productsList += `<div class="card" style="width: 18rem;">
