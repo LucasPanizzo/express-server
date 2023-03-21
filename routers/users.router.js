@@ -10,7 +10,7 @@ router.post('/register',passport.authenticate('register',{
     successRedirect: '/',
     passReqToCallback:true
 }))
-
+ 
 router.post('/login',passport.authenticate('login',{
     failureRedirect:"/loginWrong",
     passReqToCallback:true
@@ -29,5 +29,12 @@ router.get('/logout',(req,res)=>{
         console.log(error);
     }
 })
+router.get("/githubRegister",passport.authenticate("github",{
+    scope:["user:email"]
+}))
 
+router.get("/github", passport.authenticate("github"),(req,res)=>{
+    req.session.userInfo = req.user
+    res.redirect('/products')
+});
 export default router
