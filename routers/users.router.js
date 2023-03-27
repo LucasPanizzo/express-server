@@ -34,7 +34,6 @@ router.get("/githubRegister",passport.authenticate("github",{
 }))
 
 router.get("/github", passport.authenticate("github"),(req,res)=>{
-    console.log(req.user);
     req.session.userInfo = req.user
     res.redirect('/products')
 });

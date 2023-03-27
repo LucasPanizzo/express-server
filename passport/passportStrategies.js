@@ -59,14 +59,17 @@ passport.use('github',new GithubStrategy({
     clientSecret: '9cb7305941acbe07da82f8e06f3f3539c50c747e',
     callbackURL: 'http://localhost:3030/api/users/github'
 },async( accessToken, refreshToken, profile, done)=>{
+    console.log('del registro de github',profile);
     const user = await usersModels.findOne({email:profile._json.email})
+    console.log('user,sale null si es el primer registro, sino lo encuentra y logea',user);
     if(!user){
         const userData = {
-            first_name:profile._json.name.split('')[0],
-            last_name:profile._json.name.split('')[1] || '',
+            first_name:profile._json.name.split(" ")[0],
+            last_name:profile._json.name.split(" ")[1] || " ",
             email:profile._json.email,
-            password:'',          
+            password:" ",          
         }
+ 
         const newUser = await usersModels.create(userData);
         done(null,newUser)
     }else{
