@@ -37,4 +37,9 @@ router.get("/github", passport.authenticate("github"),(req,res)=>{
     req.session.userInfo = req.user
     res.redirect('/products')
 });
+
+router.post('/oldRegister',async(req,res)=>{
+    const userData = req.body 
+    await userManagement.createUser(userData)
+})
 export default router

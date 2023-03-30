@@ -4,9 +4,9 @@ import { cryptedPassword,comparePasswords } from "../../../../utilities.js";
 export class userManager {
     async createUser(userData) {
         try {
-            console.log('userdata antes del destruct'+userData);
+            console.log('userdata antes del destruct',userData);
             const {password} = userData
-            console.log('despues'+userData);
+            console.log('despues',userData);
             const newPassword = await cryptedPassword(password)
             const cryptedUser = {...userData,password:newPassword}
             const newUser = await usersModels.create(cryptedUser)

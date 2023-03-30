@@ -10,6 +10,7 @@ import products from './routers/products.router.js'
 import carts from './routers/carts.router.js'
 import users from './routers/users.router.js'
 import jwt from './routers/jwt.router.js'
+import sessions from './routers/sessions.router.js'
 import { __dirname } from './utilities.js'
 import './DAO/MongoDB/db/dbConfig.js'
 import session from 'express-session'
@@ -91,6 +92,7 @@ app.use('/api/carts', carts)
 app.use('/',views)
 app.use('/api/users',users)
 app.use('/jwt',jwt)
+app.use('/api/sessions',sessions)
 
 app.use(passport.initialize())
 app.use(passport.session())
