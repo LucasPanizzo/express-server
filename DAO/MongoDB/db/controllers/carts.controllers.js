@@ -79,14 +79,6 @@ export default class cartManager {
                 else{
                     return undefined
                 }
-        //     const cart = await this.getCartByID(idCart)
-        //     const productsArray = cart.products
-        //     const deletedProduct = await this.findProductInCart(idCart,idProduct)
-        //     const productIndex = productsArray.indexOf(deletedProduct)
-        //     productsArray.splice(productIndex,1)
-        //     console.log(productIndex);
-        //     await cart.save()
-        //     return cart
         } catch (error) {
             console.log(error);
         }

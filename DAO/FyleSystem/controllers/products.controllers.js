@@ -6,11 +6,15 @@ export default class ProductManager {
     constructor(path){
          this.path = path
     }
-    async getProducts() {
+    async getProducts(limit,page,sort,query) {
         try {
-            if (fs.existsSync(path)) {
-                const products = await fs.promises.readFile(path,'utf-8')
-                return JSON.parse(products)
+            if (fs.existsSync(this.path)) {
+                let productsFromFile = await fs.promises.readFile(this.path, 'utf-8');
+                let productsFromFileStringified = JSON.parse(productsFromFile)
+                if (limit) {
+                    return productsFromFileStringified.slice(0, limit)
+                }
+                return productsFromFileStringified
             } else {
                 return []
             }

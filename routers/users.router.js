@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { logoutController } from "../controllers/users.controllers.js";
 import { userManager } from "../DAO/MongoDB/db/controllers/users.controllers.js";
 import passport from "passport";
 
@@ -19,16 +20,18 @@ router.post('/login',passport.authenticate('login',{
     res.redirect('/products')
 })
 
-router.get('/logout',(req,res)=>{
-    try {
-        req.session.destroy((error) => {
-          if (error) console.log(error)
-          res.redirect('/')
-        })
-    } catch (error) {
-        console.log(error);
-    }
-})
+router.get('/logout',logoutController
+// (req,res)=>{
+//     try {
+//         req.session.destroy((error) => {
+//           if (error) console.log(error)
+//           res.redirect('/')
+//         })
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+)
 router.get("/githubRegister",passport.authenticate("github",{
     scope:["user:email"]
 }))

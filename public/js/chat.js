@@ -34,7 +34,6 @@ form.onsubmit = (e) => {
 }
 
 socketClient.on('chat',messages=>{
-    console.log(messages);
     const chatRender = messages.map(elem=>{
         return `<p><strong>${elem.user}: </strong>${elem.message}</p>`
     }).join(' ')

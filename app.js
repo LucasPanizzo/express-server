@@ -17,11 +17,12 @@ import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import passport from 'passport'
 import './passport/passportStrategies.js'
+import config from './config.js'
+import { getMessagesService,newMessageService } from './services/messages.services.js'
 // Declarations
 const app = express()
-const port = 3030
+const port = config.PORT
 const inst = new ProductManager
-const message = new messageManager
 const cart = new cartManager
 // Server
 const httpServer = app.listen(port,()=>{
@@ -40,19 +41,22 @@ socketServer.on('connection',async(socket)=>{
     socketServer.emit('writeProducts',productsList)
     //Funcion que crea el producto que le llega.
     socket.on('creacionProducto',async(obj)=>{
-        const productsList = await inst.getProducts()
+        const products = await inst.getProducts()
+        const productsList = products.payload
         if(await productsList.find((el) => el.code === obj.code)){
             console.log('El producto que quieres agregar ya existe');
         } else{
         await inst.addProduct(obj)
-        const productsList = await inst.getProducts()
+        const products = await inst.getProducts()
+        const productsList = products.payload
         socketServer.emit('writeProducts',productsList)
         } 
     })
     //Funcion que elimina un producto en especifico de la DB.
     socket.on('eliminacionProducto',async(id)=>{
         await inst.deleteProduct(id)
-        const productsList = await inst.getProducts()
+        const products = await inst.getProducts()
+        const productsList = products.payload
         socketServer.emit('writeProducts',productsList)
     })
     //Funcion que agrega al carrito el producto seleccionado, le marco la id de forma manual, no tiene sentido hacerlo con la herramienta que tengo ahora para que cada vez que se cargue el page se cree un carrito nuevo. Cuando empiece a trabajar con Sessions creare un cart para cada Session en particular.
@@ -61,9 +65,8 @@ socketServer.on('connection',async(socket)=>{
     })
     // CHAT 
     socket.on('mensaje',async info=>{
-        await message.newMessage(info)
-        console.log(info);
-        const messages = await message.getMessages()
+        await newMessageService(info)
+        const messages = await getMessagesService()
         socketServer.emit('chat',messages)
     })
 })
