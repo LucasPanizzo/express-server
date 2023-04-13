@@ -1,4 +1,4 @@
-import MongoDB from '../MongoDB/db/controllers/chat.controllers.js'
+import MongoDB from '../MongoDB/db/managers/chat.manager.js'
 import { messageModels } from '../MongoDB/db/models/chat.models.js'
 
 let persistence = new MongoDB('Messages', messageModels)

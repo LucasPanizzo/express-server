@@ -1,16 +1,14 @@
 import { usersModels } from "../models/users.models.js";
 import { cryptedPassword,comparePasswords } from "../../../../utilities.js";
+import { trusted } from "mongoose";
 
-export class userManager {
+export default class userManager {
     async createUser(userData) {
         try {
-            console.log('userdata antes del destruct',userData);
             const {password} = userData
-            console.log('despues',userData);
             const newPassword = await cryptedPassword(password)
             const cryptedUser = {...userData,password:newPassword}
             const newUser = await usersModels.create(cryptedUser)
-            console.log('newUser'+newUser);
             return newUser
         } catch (error) {
             console.log(error);

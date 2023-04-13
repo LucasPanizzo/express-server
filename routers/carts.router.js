@@ -1,16 +1,13 @@
 import { Router } from "express";
-import { addCartController,getCartByIDController,addToCartController,deleteProductController,emptyCartController,updateProductsInCartController,modifyProductQuantityController } from "../controllers/carts.controllers.js";
+import { getCartController,addCartController,getCartByIDController,addToCartController,deleteProductController,emptyCartController,updateProductsInCartController,modifyProductQuantityController } from "../controllers/carts.controllers.js";
 
 const router = Router()
 
-router.post('/',addCartController
-// async(req,res) =>{
-//     await inst.addCart()
-//     res.send('Carrito creado con exito.')
-// }
-)
+router.post('/',addCartController)
 
-router.get('/:idCart',getCartByIDController
+router.get('/',getCartController)
+
+router.get('/:cid',getCartByIDController
 // async(req,res) =>{
 //     const {idCart} = req.params
 //     const searchedCart = await inst.findCartAndPoblate(idCart)

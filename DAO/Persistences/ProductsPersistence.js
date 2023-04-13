@@ -1,15 +1,12 @@
-import FileManager from '../FyleSystem/controllers/products.controllers.js'
-import MongoDB from '../MongoDB/db/controllers/products.controllers.js'
+import FileManager from '../FyleSystem/managers/products.manager.js'
+import MongoDB from '../MongoDB/db/managers/products.manager.js'
 import { productsModels } from '../MongoDB/db/models/products.models.js'
-import { Command } from 'commander'
+import config from '../../config.js'
 
-const program = new Command();
-program.option('-p', 'persistence', 'memory');
-program.parse();
 
 let persistence
 
-let argv = program.args[0]
+let argv = config.PERSISTENCES[0]
 
 switch (argv) {
     case 'fs':

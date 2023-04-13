@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { generateToken } from "../utilities.js";
-import { userManager } from "../DAO/MongoDB/db/controllers/users.controllers.js";
+import userManager from "../DAO/MongoDB/db/managers/users.manager.js";
 
 const userController = new userManager
 const router = Router()

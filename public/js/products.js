@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const productId = button.id
                 button.addEventListener("click", async () => {                 
                     //agregar producto al carrito con fetch
-                    await fetch(`/api/carts/640f8156f6d8813b3d9e580e/product/${productId}`,{method:"POST"});
+                    await fetch(`/api/carts/64385f342ae1be1ab440d62b/product/${productId}`,{method:"POST"});
                 });
             });
 

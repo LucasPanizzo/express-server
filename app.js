@@ -1,8 +1,5 @@
 // Imports
 import express from 'express'
-import ProductManager from './DAO/MongoDB/db/controllers/products.controllers.js'
-import messageManager from './DAO/MongoDB/db/controllers/chat.controllers.js'
-import cartManager from './DAO/MongoDB/db/controllers/carts.controllers.js'
 import { Server } from 'socket.io'
 import handlebars from 'express-handlebars'
 import views from './routers/views.router.js'
@@ -18,12 +15,13 @@ import MongoStore from 'connect-mongo'
 import passport from 'passport'
 import './passport/passportStrategies.js'
 import config from './config.js'
+import { addToCartService } from './services/carts.services.js'
+import { getProductsService,addProductService,deleteProductService } from './services/products.services.js'
 import { getMessagesService,newMessageService } from './services/messages.services.js'
 // Declarations
 const app = express()
 const port = config.PORT
-const inst = new ProductManager
-const cart = new cartManager
+
 // Server
 const httpServer = app.listen(port,()=>{
     console.log('Listening to port '+port);
@@ -36,32 +34,32 @@ socketServer.on('connection',async(socket)=>{
     console.log('cliente conectado');
     //REALTIME PRODUCTS
         //Funcion que escribe los productos en el DOM
-    const products = await inst.getProducts()
+    const products = await getProductsService()
     const productsList = products.payload
     socketServer.emit('writeProducts',productsList)
     //Funcion que crea el producto que le llega.
     socket.on('creacionProducto',async(obj)=>{
-        const products = await inst.getProducts()
+        const products = await getProductsService()
         const productsList = products.payload
         if(await productsList.find((el) => el.code === obj.code)){
             console.log('El producto que quieres agregar ya existe');
         } else{
-        await inst.addProduct(obj)
-        const products = await inst.getProducts()
+        await addProductService()
+        const products = await getProductsService()
         const productsList = products.payload
         socketServer.emit('writeProducts',productsList)
         } 
     })
     //Funcion que elimina un producto en especifico de la DB.
     socket.on('eliminacionProducto',async(id)=>{
-        await inst.deleteProduct(id)
-        const products = await inst.getProducts()
+        await deleteProductService()
+        const products = await getProductsService()
         const productsList = products.payload
         socketServer.emit('writeProducts',productsList)
     })
     //Funcion que agrega al carrito el producto seleccionado, le marco la id de forma manual, no tiene sentido hacerlo con la herramienta que tengo ahora para que cada vez que se cargue el page se cree un carrito nuevo. Cuando empiece a trabajar con Sessions creare un cart para cada Session en particular.
     socket.on('añadirAlCarrito',async(id)=>{
-        await cart.addToCart("640f8156f6d8813b3d9e580e",id)
+        await addToCartService("640f8156f6d8813b3d9e580e",id)
     })
     // CHAT 
     socket.on('mensaje',async info=>{
@@ -82,7 +80,7 @@ app.use(
       resave: false,
       saveUninitialized: true,
       store: new MongoStore({
-        mongoUrl: 'mongodb+srv://lucaspanizzo99:Panizzo99@coderhouse.3xliklk.mongodb.net/ecommerce?retryWrites=true&w=majority'
+        mongoUrl: config.URLMONGO
       }),
     })
   )

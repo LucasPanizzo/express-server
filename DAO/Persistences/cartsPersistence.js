@@ -1,15 +1,12 @@
-import FileManager from '../FyleSystem/controllers/carts.controllers.js'
-import MongoDB from '../MongoDB/db/controllers/carts.controllers.js'
-import { cartsModels } from '../MongoDB/db/models/carts.models.js'
-import { Command } from 'commander'
 
-const program = new Command();
-program.option('-p', 'persistence', 'memory');
-program.parse();
+import FileManager from '../FyleSystem/managers/carts.manager.js'
+import MongoDB from '../MongoDB/db/managers/carts.manager.js'
+import { cartsModels } from '../MongoDB/db/models/carts.models.js'
+import config from '../../config.js'
 
 let persistence
 
-let argv = program.args[0]
+let argv = config.PERSISTENCES[0]
 
 switch (argv){
     case 'fs':
@@ -31,7 +28,7 @@ export async function getCarts() {
 }
 
 export async function getCartByID(cartID) {
-    return await persistence.findCartAndPoblate(cartID)
+    return await persistence.getCartByID(cartID)
 }
 
 export async function addToCart(cartID, productID) {

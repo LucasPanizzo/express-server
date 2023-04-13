@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { logoutController } from "../controllers/users.controllers.js";
-import { userManager } from "../DAO/MongoDB/db/controllers/users.controllers.js";
+import { logoutController,getUserByEmailController } from "../controllers/users.controllers.js";
+import userManager from "../DAO/MongoDB/db/managers/users.manager.js";
 import passport from "passport";
 
 const router = Router()
@@ -11,6 +11,8 @@ router.post('/register',passport.authenticate('register',{
     successRedirect: '/',
     passReqToCallback:true
 }))
+
+router.get('/',getUserByEmailController)
  
 router.post('/login',passport.authenticate('login',{
     failureRedirect:"/loginWrong",

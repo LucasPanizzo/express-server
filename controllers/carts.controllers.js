@@ -4,10 +4,10 @@ import {getProductsByIDService} from '../services/products.services.js'
 
 export const addCartController = async (req, res) => {
     try {
-        const newCart = await addCartService()
-        res.json({ message:'Carrito creado con exito.',newCart})
+        await addCartService()
+        res.send('carrito creado con exito')
     } catch (error) {
-        console.log(error);
+        console.log('aca',error);
     }
 }
 

@@ -3,5 +3,6 @@ dotenv.config()
 
 export default{
     PORT: process.env.PORT,
-    URLMONGO: process.env.URLMONGO
+    URLMONGO: process.env.URLMONGO,
+    PERSISTENCES: [process.env.MONGOPERSISTENCE,process.env.FSPERSISTENCE]
 }
