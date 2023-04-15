@@ -1,5 +1,11 @@
+
 document.addEventListener("DOMContentLoaded", async () => {
-    fetch("/api/carts/640f8156f6d8813b3d9e580e", {method:"GET"})
+
+    const userCart = await fetch("/api/carts/test",{method:"GET"})
+    const responseJson = await userCart.json();
+    const cartID = responseJson.cartProducts._id;
+
+    fetch(`/api/carts/${cartID}`, {method:"GET"})
     .then((res) => res.json())
     .then((res) => {
         const cardContainer = document.getElementById('card-container')

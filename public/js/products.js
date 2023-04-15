@@ -1,5 +1,10 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+    const userCart = await fetch("/api/carts/test",{method:"GET"})
+    const responseJson = await userCart.json();
+    const cartID = responseJson.cartProducts._id;
+
     const cardContainer = document.getElementById('card-container')
     const options = {
         method: "GET",
@@ -11,9 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     fetch("/api/products", options)
         .then((res) => res.json())
         .then((res) => {
-            
             const products = res.payload
-            console.log(products);
             let productsList = ""
             products.forEach((product)=>{
                 productsList += `<div class="card" style="width: 18rem;">
@@ -35,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const productId = button.id
                 button.addEventListener("click", async () => {                 
                     //agregar producto al carrito con fetch
-                    await fetch(`/api/carts/64385f342ae1be1ab440d62b/product/${productId}`,{method:"POST"});
+                    await fetch(`/api/carts/${cartID}/product/${productId}`,{method:"POST"});
                 });
             });
 

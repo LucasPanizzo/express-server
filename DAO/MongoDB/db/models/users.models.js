@@ -24,7 +24,16 @@ const usersSchema = new mongoose.Schema({
     rol:{
         type:String,
         default:"user"
+    },
+    userCart:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"carts"
     }
 });
+
+usersSchema.pre("findOne",function(next){
+    this.populate("userCart")
+    next()
+})
 
 export const usersModels = mongoose.model("users", usersSchema);

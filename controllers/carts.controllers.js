@@ -35,6 +35,21 @@ export const getCartByIDController =  async (req, res) => {
     }
 }
 
+export const test =  async (req, res) => {
+    try {
+        const cartID = req.session.userInfo.userCart
+        const searchedCart = await getCartByIDService(cartID)
+        if (searchedCart) {
+            const cartProducts = searchedCart[0]
+            res.json({message:'Carrito encontrado',cartProducts})
+        } else {
+            res.send('El carrito buscado no existe en la base de datos.')
+        }
+    } catch (error) {
+        console.log('error');
+    }
+}
+
 export const addToCartController =  async (req, res) => {
     try {
         const cartID = req.params.cid

@@ -28,7 +28,7 @@ export async function getCarts() {
 }
 
 export async function getCartByID(cartID) {
-    return await persistence.getCartByID(cartID)
+    return await persistence.findCartAndPoblate(cartID)
 }
 
 export async function addToCart(cartID, productID) {

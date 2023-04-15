@@ -14,8 +14,9 @@ passport.use('register', new LocalStrategy({
     if (user) {
         return done(null,false)
     } else {
+        const addedCart = await addCartService()
         const newPassword = await cryptedPassword(password)
-        const cryptedUser = {...req.body,password:newPassword}
+        const cryptedUser = {...req.body,password:newPassword,userCart:addedCart._id}
         const newUser = await usersModels.create(cryptedUser)
         done(null,newUser)
     }
@@ -34,7 +35,8 @@ passport.use('login', new LocalStrategy({
                 email: email,
                 password: password,
                 age: 99,
-                rol: "Admin"
+                rol: "Admin",
+                userCart: '64385f342ae1be1ab440d62b'
             }
             return done(null, userAdmin)
         } else {
@@ -61,12 +63,14 @@ passport.use('github',new GithubStrategy({
     callbackURL: 'http://localhost:3030/api/users/github'
 },async( accessToken, refreshToken, profile, done)=>{
     const user = await usersModels.findOne({email:profile._json.email})
+    const addedCart = await addCartService()
     if(!user){
         const userData = {
             first_name:profile._json.name.split(" ")[0],
             last_name:profile._json.name.split(" ")[1] || " ",
             email:profile._json.email,
-            password:" ",       
+            password:" ",
+            userCart: addedCart._id     
         }
  
         const newUser = await usersModels.create(userData);
