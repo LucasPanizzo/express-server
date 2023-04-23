@@ -1,7 +1,7 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    const userCart = await fetch("/api/carts/test",{method:"GET"})
+    const userCart = await fetch("/api/carts/getUserCart",{method:"GET"})
     const responseJson = await userCart.json();
     const cartID = responseJson.cartProducts._id;
 

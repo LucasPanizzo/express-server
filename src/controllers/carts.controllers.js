@@ -35,7 +35,7 @@ export const getCartByIDController =  async (req, res) => {
     }
 }
 
-export const test =  async (req, res) => {
+export const getUserCart =  async (req, res) => {
     try {
         const cartID = req.session.userInfo.userCart
         const searchedCart = await getCartByIDService(cartID)

@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { test,getCartController,addCartController,getCartByIDController,addToCartController,deleteProductController,emptyCartController,updateProductsInCartController,modifyProductQuantityController } from "../controllers/carts.controllers.js";
+import { getUserCart,getCartController,addCartController,getCartByIDController,addToCartController,deleteProductController,emptyCartController,updateProductsInCartController,modifyProductQuantityController } from "../controllers/carts.controllers.js";
+import { verificarUsuario } from "../middlewares/auth.js";
 
 const router = Router()
 
-router.get('/test',test)
+router.get('/getUserCart',getUserCart)
 
 router.post('/',addCartController)
 
@@ -21,7 +22,7 @@ router.get('/:cid',getCartByIDController
 //     }
 // }
 )
-router.post('/:cid/product/:pid',addToCartController
+router.post('/:cid/product/:pid',verificarUsuario,addToCartController
 // async(req,res)=>{
 //     const cartId = req.params.cid
 //     const productId = req.params.pid

@@ -14,7 +14,7 @@ if (!usuario) {
     input: 'text',
     inputValidator: (value) => {
       if (!value) {
-        return 'Necesitas ingresar un usuario'
+        return 'Tienes que ingresar un usuario'
       }
     },
   }).then((username) => {

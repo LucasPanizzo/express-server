@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { verificarUsuario } from "../middlewares/auth.js";
 
 const router = Router()
 
@@ -31,7 +32,7 @@ router.get('/realtimeproducts',async(req,res)=>{
 })
 
 
-router.get('/chathandlebars',async(req,res)=>{
+router.get('/chathandlebars',verificarUsuario,async(req,res)=>{
     res.render('chat')
 })
 

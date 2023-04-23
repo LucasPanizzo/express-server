@@ -1,5 +1,6 @@
 import {Router } from "express";
 import { getProductsController,getProductsByIDController,addProductController,deleteProductController,updateProductController } from "../controllers/products.controllers.js";
+import { verificarAdmin } from "../middlewares/auth.js";
 
 const router = Router()
 
@@ -27,7 +28,7 @@ router.get('/:idProduct',getProductsByIDController
 // }
 )
 
-router.post('/',addProductController
+router.post('/',verificarAdmin,addProductController
 // async(req,res) =>{
 //     const products = await inst.getProducts()
 //     const productsList = products.payload
@@ -44,7 +45,7 @@ router.post('/',addProductController
 // }
 )
 
-router.delete('/:idProduct',deleteProductController
+router.delete('/:idProduct',verificarAdmin,deleteProductController
 // async (req,res)=>{
 //     const {idProduct} = req.params
 //     let productoEliminado = await inst.getProductsByID(idProduct)
@@ -57,7 +58,7 @@ router.delete('/:idProduct',deleteProductController
 // }
 )
 
-router.put('/:idProduct',updateProductController
+router.put('/:idProduct',verificarAdmin,updateProductController
 // async (req,res)=>{
 //     const {idProduct} = req.params
 //     const actualizacion = req.body
