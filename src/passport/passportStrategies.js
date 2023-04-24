@@ -32,7 +32,6 @@ passport.use('login', new LocalStrategy({
 },async(req,email,password,done)=>{
     try {
         if (email === config.ADMINMAIL && password === config.ADMINPASSWORD) {
-            console.log('llega');
             const userAdmin = {
                 _id:'admin_id',
                 first_name: "Admin",
@@ -43,12 +42,10 @@ passport.use('login', new LocalStrategy({
             }
             return done(null, userAdmin)
         } else {
-            console.log('no llega',config.ADMINMAIL,config.ADMINPASSWORD);
             const user = await usersModels.findOne({email:email})
             if (user) {
                 const realPassword = await comparePasswords(password,user.password)
                 if (realPassword) {
-                    console.log(user);
                     return done(null,user)
                 } else{
                     return done(null,false)
