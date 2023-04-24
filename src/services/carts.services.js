@@ -1,4 +1,4 @@
-import { addCart,getCartByID,getCarts,addToCart,deleteProduct,emptyCart,modifyProductQuantity,updateProductsInCart } from "../persistences/persistences/cartsPersistence.js";
+import { addCart,getCartByID,getCarts,addToCart,deleteProduct,emptyCart,modifyProductQuantity,updateProductsInCart,purchase } from "../persistences/persistences/cartsPersistence.js";
 
 export async function addCartService(){
     const cart = await addCart()
@@ -38,4 +38,9 @@ export async function modifyProductQuantityService(cartID, productID, quantity){
 export async function updateProductsInCartService(products, cartID){
     const cart = await updateProductsInCart(products, cartID)
     return cart
+}
+
+export async function purchaseService(cartID,email){
+    const ticket = await purchase(cartID,email)
+    return ticket
 }

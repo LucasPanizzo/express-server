@@ -1,5 +1,6 @@
-import { addCartService,getCartsService,getCartByIDService,addToCartService,deleteProductService,emptyCartService,updateProductsInCartService,modifyProductQuantityService } from "../services/carts.services.js";
+import { addCartService,getCartsService,getCartByIDService,addToCartService,deleteProductService,emptyCartService,updateProductsInCartService,modifyProductQuantityService,purchaseService } from "../services/carts.services.js"
 import {getProductsByIDService} from '../services/products.services.js'
+import { currentSession } from "./sessions.controllers.js"
 
 
 export const addCartController = async (req, res) => {
@@ -142,5 +143,15 @@ export const modifyProductQuantityController =  async (req, res) => {
         }
     } catch (error) {
         console.log('error');
+    }
+}
+
+export const purchaseController = async(req,res)=>{
+    try {
+      const email = req.session.userInfo.email
+      const cartID = req.params.cid
+      return await purchaseService(cartID,email)
+    } catch (error) {
+        console.log(error);
     }
 }

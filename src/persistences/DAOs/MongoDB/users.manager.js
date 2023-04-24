@@ -24,7 +24,6 @@ export default class userManager {
                 }
                 return userAdmin
             } else {
-                console.log('sii');
                 const user = await usersModels.findOne({email:email})
                 if (user) {
                     const realPassword = await comparePasswords(password,user.password)

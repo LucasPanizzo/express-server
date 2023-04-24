@@ -50,3 +50,7 @@ export async function modifyProductQuantity(cartID, productID, quantity) {
 export async function updateProductsInCart(products, cartID) {
     return await persistence.updateProductsInCart(products, cartID)
 }
+
+export async function purchase(cartID,email){
+    return await persistence.purchaseProductsInCart(cartID,email)
+}
