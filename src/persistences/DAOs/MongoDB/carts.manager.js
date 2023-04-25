@@ -139,11 +139,11 @@ export default class cartManager {
                 stock: newStock,
               });
             } else {
-              productsNoStock.push(productsInCart[i]);
-              console.log(productsNoStock);
+              productsNoStock.push(productsInCart[i].productId.toHexString());
             }
           }
-         return await this.#ticketGenerator(prices, email);
+         await this.#ticketGenerator(prices, email);
+         return productsNoStock
 
         } catch (error) {
           console.log(error);

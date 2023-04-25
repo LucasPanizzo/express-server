@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   <h6 class="card-subtitle mb-2 text-muted">${product.price}</h6>
                   <p class="card-text">${product.description}</p>
                   <p class="card-text">${product.category}</p>
+                  <p class="card-text">stock:${product.stock}</p>
                   
                   <button class="add-butt" id=${product._id}>Añadir al carrito</button>
                 </div>
@@ -37,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             addToCart.forEach((button) => {
                 const productId = button.id
                 button.addEventListener("click", async () => {                 
-                    //agregar producto al carrito con fetch
                     await fetch(`/api/carts/${cartID}/product/${productId}`,{method:"POST"});
                 });
             });

@@ -8,6 +8,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     fetch(`/api/carts/${cartID}`, {method:"GET"})
     .then((res) => res.json())
     .then((res) => {
+        const purchaseButton = document.getElementById('purchase-button')
+        purchaseButton.addEventListener("click", async () => {                 
+            const remaining = await fetch(`/api/carts/purchase/${cartID}/`,{method:"GET"});
+            const responseJsonRemaining = await remaining.json()
+            console.log('asd:',responseJsonRemaining);
+        });
         const cardContainer = document.getElementById('card-container')
         const products = res.cartProducts
         if (products.length !== 0) {

@@ -1,6 +1,6 @@
-import { addCartService,getCartsService,getCartByIDService,addToCartService,deleteProductService,emptyCartService,updateProductsInCartService,modifyProductQuantityService,purchaseService } from "../services/carts.services.js"
-import {getProductsByIDService} from '../services/products.services.js'
-import { currentSession } from "./sessions.controllers.js"
+import { addCartService, getCartsService, getCartByIDService, addToCartService, deleteProductService, emptyCartService, updateProductsInCartService, modifyProductQuantityService, purchaseService } from "../services/carts.services.js"
+import { getProductsByIDService } from '../services/products.services.js'
+import { currentSessionService } from "../services/users.services.js"
 
 
 export const addCartController = async (req, res) => {
@@ -8,26 +8,26 @@ export const addCartController = async (req, res) => {
         await addCartService()
         res.send('carrito creado con exito')
     } catch (error) {
-        console.log('aca',error);
+        console.log('aca', error);
     }
 }
 
 export const getCartController = async (req, res) => {
     try {
         const carts = await getCartsService()
-        res.json({ message:'Lista de carritos:',carts})
+        res.json({ message: 'Lista de carritos:', carts })
     } catch (error) {
         console.log(error);
     }
 }
 
-export const getCartByIDController =  async (req, res) => {
+export const getCartByIDController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const searchedCart = await getCartByIDService(cartID)
         if (searchedCart) {
             const cartProducts = searchedCart[0].products
-            res.json({message:'Carrito encontrado',cartProducts})
+            res.json({ message: 'Carrito encontrado', cartProducts })
         } else {
             res.send('El carrito buscado no existe en la base de datos.')
         }
@@ -36,13 +36,13 @@ export const getCartByIDController =  async (req, res) => {
     }
 }
 
-export const getUserCart =  async (req, res) => {
+export const getUserCart = async (req, res) => {
     try {
         const cartID = req.session.userInfo.userCart
         const searchedCart = await getCartByIDService(cartID)
         if (searchedCart) {
             const cartProducts = searchedCart[0]
-            res.json({message:'Carrito encontrado',cartProducts})
+            res.json({ message: 'Carrito encontrado', cartProducts })
         } else {
             res.send('El carrito buscado no existe en la base de datos.')
         }
@@ -51,7 +51,7 @@ export const getUserCart =  async (req, res) => {
     }
 }
 
-export const addToCartController =  async (req, res) => {
+export const addToCartController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const productID = req.params.pid
@@ -59,7 +59,7 @@ export const addToCartController =  async (req, res) => {
         if (searchedCart) {
             const productFound = await getProductsByIDService(productID)
             if (productFound) {
-                await addToCartService(cartID,productID)
+                await addToCartService(cartID, productID)
                 res.send('Producto agregado con exito.')
             } else {
                 res.send('El producto que quieres agregar no existe')
@@ -72,7 +72,7 @@ export const addToCartController =  async (req, res) => {
     }
 }
 
-export const deleteProductController =  async (req, res) => {
+export const deleteProductController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const productID = req.params.pid
@@ -80,7 +80,7 @@ export const deleteProductController =  async (req, res) => {
         if (searchedCart) {
             const productFound = await getProductsByIDService(productID)
             if (productFound) {
-                await deleteProductService(cartID,productID)
+                await deleteProductService(cartID, productID)
                 res.send('Producto eliminado con exito.')
             } else {
                 res.send('El producto que quieres eliminar no se encuentra en el carrito.')
@@ -93,7 +93,7 @@ export const deleteProductController =  async (req, res) => {
     }
 }
 
-export const emptyCartController =  async (req, res) => {
+export const emptyCartController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const searchedCart = await getCartByIDService(cartID)
@@ -108,13 +108,13 @@ export const emptyCartController =  async (req, res) => {
     }
 }
 
-export const updateProductsInCartController =  async (req, res) => {
+export const updateProductsInCartController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const products = req.body
         const searchedCart = await getCartByIDService(cartID)
         if (searchedCart) {
-            await updateProductsInCartService(products,cartID)
+            await updateProductsInCartService(products, cartID)
             res.send('Carrito modificado con exito.')
         } else {
             res.send('El carrito buscado no existe en la base de datos.')
@@ -124,7 +124,7 @@ export const updateProductsInCartController =  async (req, res) => {
     }
 }
 
-export const modifyProductQuantityController =  async (req, res) => {
+export const modifyProductQuantityController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const productID = req.params.pid
@@ -133,7 +133,7 @@ export const modifyProductQuantityController =  async (req, res) => {
         if (searchedCart) {
             const productFound = await getProductsByIDService(productID)
             if (productFound) {
-                await modifyProductQuantityService(cartID,productID,quantity)
+                await modifyProductQuantityService(cartID, productID, quantity)
                 res.send('Cantidad modificada con exito.')
             } else {
                 res.send('El producto que quieres modificar no se encuentra en el carrito.')
@@ -146,11 +146,17 @@ export const modifyProductQuantityController =  async (req, res) => {
     }
 }
 
-export const purchaseController = async(req,res)=>{
+export const purchaseController = async (req, res) => {
     try {
-      const email = req.session.userInfo.email
-      const cartID = req.params.cid
-      return await purchaseService(cartID,email)
+        const currentSession = await currentSessionService(await req.session.userInfo)
+        const email = currentSession.email
+        const cartID = req.params.cid
+        const remainingProducts = await purchaseService(cartID, email)
+        if (remainingProducts.length != 0) {
+        res.send(`Los siguientes productos no tienen stock suficiente para ser comprados: ${remainingProducts}`)
+        } else {
+        res.send('Compra realizada con exito')
+        }
     } catch (error) {
         console.log(error);
     }

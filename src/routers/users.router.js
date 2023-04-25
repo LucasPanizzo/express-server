@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { logoutController,getUserByEmailController } from "../controllers/users.controllers.js";
+import { logoutController } from "../controllers/users.controllers.js";
 import passport from "passport";
 
 const router = Router()
@@ -9,8 +9,6 @@ router.post('/register',passport.authenticate('register',{
     successRedirect: '/',
     passReqToCallback:true
 }))
-
-router.get('/',getUserByEmailController)
  
 router.post('/login',passport.authenticate('login',{
     failureRedirect:"/loginWrong",

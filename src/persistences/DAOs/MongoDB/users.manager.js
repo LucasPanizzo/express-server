@@ -1,6 +1,7 @@
 import { usersModels } from "../../MongoDB/models/users.models.js";
 import { cryptedPassword,comparePasswords } from "../../../utilities.js";
 import config from "../../../config.js";
+import CurrentDTO from "../../DTOs/current.dto.js";
 
 export default class userManager {
     async createUser(user) {

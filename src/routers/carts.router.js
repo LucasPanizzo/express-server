@@ -1,9 +1,6 @@
 import { Router } from "express";
 import { getUserCart,getCartController,addCartController,getCartByIDController,addToCartController,deleteProductController,emptyCartController,updateProductsInCartController,modifyProductQuantityController,purchaseController } from "../controllers/carts.controllers.js";
 import { verificarUsuario } from "../middlewares/auth.js";
-import cartManager from "../persistences/DAOs/MongoDB/carts.manager.js";
-
-const inst = new cartManager
 
 const router = Router()
 
