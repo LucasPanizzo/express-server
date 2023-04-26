@@ -10,7 +10,8 @@ router.post('/register',passport.authenticate('register',{
     passReqToCallback:true
 }))
  
-router.post('/login',passport.authenticate('login',{
+router.post('/login',
+passport.authenticate('login',{
     failureRedirect:"/loginWrong",
     passReqToCallback:true
 }),async(req,res)=>{

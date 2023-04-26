@@ -12,7 +12,7 @@ export const addCartController = async (req, res) => {
     }
 }
 
-export const getCartController = async (req, res) => {
+export const getCartsController = async (req, res) => {
     try {
         const carts = await getCartsService()
         res.json({ message: 'Lista de carritos:', carts })

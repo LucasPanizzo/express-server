@@ -28,6 +28,7 @@ export const addProductController = async (req, res) => {
     try {
         const products = await getProductsService()
         const productsList = products.payload
+        console.log(req.body);
         if (!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.stock || !req.body.status || !req.body.category || !req.body.thumbnails) {
             res.send('Debes completar todos los campos necesarios para crear un producto. Estos son: title,description,code,price,stock,category,status y thumbnails.');
         } else {

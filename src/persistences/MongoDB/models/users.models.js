@@ -26,7 +26,7 @@ const usersSchema = new mongoose.Schema({
     },
     rol:{
         type:String,
-        default:"user"
+        default:"admin"
     },
     userCart:{
         type:mongoose.Schema.Types.ObjectId,
