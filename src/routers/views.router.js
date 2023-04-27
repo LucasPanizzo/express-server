@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { verificarUsuario } from "../middlewares/auth.js";
+import { getProductsService } from "../services/products.services.js";
 
 const router = Router()
 
@@ -24,7 +25,10 @@ router.get('/registerWrong',(req,res)=>{
 })
 
 router.get('/products', async (req,res)=>{
-    res.render('index',req.session.userInfo)
+    const { limit, page, sort, ...query } = req.query
+    const products = await getProductsService(limit,page,sort,query)
+    const productsList = await products.payload.map(product => Object.assign({}, product._doc))
+    res.render('index',{"session":req.session.userInfo,"products":productsList})
 })
 
 router.get('/realtimeproducts',async(req,res)=>{

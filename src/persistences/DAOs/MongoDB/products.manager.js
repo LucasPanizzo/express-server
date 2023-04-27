@@ -6,7 +6,6 @@ export default class ProductManager {
                 limit: parseInt(limit) || 10,
                 page: parseInt(page) || 1,
                 sort: parseInt(sort) ? {price:sort} : {},
-
             }
             const queryes = query || {}
             const products = await productsModels.paginate(queryes,objects)

@@ -40,7 +40,6 @@ socketServer.on('connection',async(socket)=>{
     //Funcion que crea el producto que le llega.
     socket.on('creacionProducto',async(obj)=>{
         const products = await getProductsService()
-        console.log(obj);
         const productsList = products.payload
         if(await productsList.find((el) => el.code === obj.code)){
             console.log('El producto que quieres agregar ya existe');
@@ -53,7 +52,7 @@ socketServer.on('connection',async(socket)=>{
     })
     //Funcion que elimina un producto en especifico de la DB.
     socket.on('eliminacionProducto',async(id)=>{
-        await deleteProductService()
+        await deleteProductService(id)
         const products = await getProductsService()
         const productsList = products.payload
         socketServer.emit('writeProducts',productsList)

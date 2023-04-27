@@ -9,10 +9,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     .then((res) => res.json())
     .then((res) => {
         const purchaseButton = document.getElementById('purchase-button')
-        purchaseButton.addEventListener("click", async () => {                 
+        purchaseButton.addEventListener("click", async () => {                
             const remaining = await fetch(`/api/carts/purchase/${cartID}/`,{method:"GET"});
             const responseJsonRemaining = await remaining.json()
-            console.log('asd:',responseJsonRemaining);
+            alert(responseJsonRemaining.message);
+            location.reload()
         });
         const cardContainer = document.getElementById('card-container')
         const products = res.cartProducts

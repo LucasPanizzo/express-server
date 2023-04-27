@@ -32,7 +32,7 @@ export const getCartByIDController = async (req, res) => {
             res.send('El carrito buscado no existe en la base de datos.')
         }
     } catch (error) {
-        console.log('error');
+        console.log('error aca');
     }
 }
 
@@ -153,7 +153,7 @@ export const purchaseController = async (req, res) => {
         const cartID = req.params.cid
         const remainingProducts = await purchaseService(cartID, email)
         if (remainingProducts.length != 0) {
-        res.send(`Los siguientes productos no tienen stock suficiente para ser comprados: ${remainingProducts}`)
+        res.json({message:`Los siguientes productos no tienen stock suficiente para ser comprados: ${remainingProducts}`})
         } else {
         res.send('Compra realizada con exito')
         }
