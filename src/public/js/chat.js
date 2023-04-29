@@ -1,26 +1,13 @@
-const socketClient = io()
+const socketClient = io() 
 // CHAT
 
 const form = document.getElementById('form')
 const input = document.getElementById('message')
 const chat = document.getElementById('chat')
+const user = document.getElementById('user-name')
 
-let usuario = null
+let usuario = user.textContent
 
-if (!usuario) {
-  Swal.fire({
-    title: 'BIENVENIDO',
-    text: 'Ingresa tu usuario',
-    input: 'text',
-    inputValidator: (value) => {
-      if (!value) {
-        return 'Tienes que ingresar un usuario'
-      }
-    },
-  }).then((username) => {
-    usuario = username.value
-  })
-}
 form.onsubmit = (e) => {
   e.preventDefault()
 

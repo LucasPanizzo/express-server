@@ -28,7 +28,6 @@ export const addProductController = async (req, res) => {
     try {
         const products = await getProductsService()
         const productsList = products.payload
-        console.log(req.body);
         if (!req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.stock || !req.body.status || !req.body.category || !req.body.thumbnails) {
             res.send('Debes completar todos los campos necesarios para crear un producto. Estos son: title,description,code,price,stock,category,status y thumbnails.');
         } else {
@@ -72,5 +71,16 @@ export const updateProductController = async (req,res)=>{
         }
     } catch (error) {
         console.log(error); 
+    }
+}
+
+export const writeProductsController = async (req,res)=>{
+    try {
+        const { limit, page, sort, ...query } = req.query
+        const products = await getProductsService(limit,page,sort,query)
+        const productsList = await products.payload.map(product => Object.assign({}, product._doc))
+        res.render('index',{"session":req.session.userInfo,"products":productsList})
+    } catch (error) {
+        console.log(error);
     }
 }

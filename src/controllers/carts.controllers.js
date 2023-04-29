@@ -8,7 +8,7 @@ export const addCartController = async (req, res) => {
         await addCartService()
         res.send('carrito creado con exito')
     } catch (error) {
-        console.log('aca', error);
+        console.log(error);
     }
 }
 
@@ -32,7 +32,7 @@ export const getCartByIDController = async (req, res) => {
             res.send('El carrito buscado no existe en la base de datos.')
         }
     } catch (error) {
-        console.log('error aca');
+        console.log('error');
     }
 }
 
@@ -151,13 +151,22 @@ export const purchaseController = async (req, res) => {
         const currentSession = await currentSessionService(await req.session.userInfo)
         const email = currentSession.email
         const cartID = req.params.cid
-        const remainingProducts = await purchaseService(cartID, email)
+        const response = await purchaseService(cartID, email)
+        const remainingProducts = response.productsNoStock
         if (remainingProducts.length != 0) {
         res.json({message:`Los siguientes productos no tienen stock suficiente para ser comprados: ${remainingProducts}`})
         } else {
-        res.send('Compra realizada con exito')
+            res.json({message:`Compra realiza con éxito`})
         }
     } catch (error) {
         console.log(error);
     }
+}
+
+export const writeCartsController = async (req,res)=>{
+    const session = await currentSessionService(await req.session.userInfo)
+    const userCartID = session.userCart
+    const cart = await getCartByIDService(userCartID)
+    const products = cart[0].products
+    res.render('cart',{"products":products})
 }

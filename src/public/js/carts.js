@@ -1,41 +1,77 @@
-
-document.addEventListener("DOMContentLoaded", async () => {
-
-    const userCart = await fetch("/api/carts/getUserCart",{method:"GET"})
+async function purchaseFunction() {
+  try {
+    const userCart = await fetch("/api/carts/getUserCart", { method: "GET" });
     const responseJson = await userCart.json();
     const cartID = responseJson.cartProducts._id;
+    const remaining = await fetch(`/api/carts/purchase/${cartID}/`, { method: "GET" });
+    const responseJsonRemaining = await remaining.json();
+    alert(responseJsonRemaining.message);
+    location.reload();
+  } catch (error) {
+    console.log(error);
+  }
+  }
+  
+  window.onload = function() {
+    try {
+      document.querySelectorAll('.card').forEach(card => {
+        calcularTotal(card.dataset.quantity, card.dataset.price);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-    fetch(`/api/carts/${cartID}`, {method:"GET"})
-    .then((res) => res.json())
-    .then((res) => {
-        const purchaseButton = document.getElementById('purchase-button')
-        purchaseButton.addEventListener("click", async () => {                
-            const remaining = await fetch(`/api/carts/purchase/${cartID}/`,{method:"GET"});
-            const responseJsonRemaining = await remaining.json()
-            alert(responseJsonRemaining.message);
-            location.reload()
-        });
-        const cardContainer = document.getElementById('card-container')
-        const products = res.cartProducts
-        if (products.length !== 0) {
-            let productsList = ""
-            products.forEach((product)=>{
-                productsList += `<div class="card" style="width: 18rem;">
-                <div class="card-body">
-                  <h5 class="card-title">${product.productId.title}</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">$${product.productId.price}</h6>
-                  <p class="card-text">${product.productId.description}</p>
-                  <p class="card-text">${product.productId.category}</p>
-                  <p class="card-text">cantidad: ${product.quantity}</p>
-                </div>
-              </div>`
-            })
-            cardContainer.innerHTML = productsList
-
-        } else {
-            let productsList = ""
-            productsList += `<h2 class="title-prod">Carrito vacio</h2>`
-            cardContainer.innerHTML = productsList
-        }
-    })
-})
+  async function quantityMod(operacion, productID, price) {
+    try {
+      const userCart = await fetch("/api/carts/getUserCart", { method: "GET" });
+      const responseJson = await userCart.json();
+      const cartID = responseJson.cartProducts._id;
+      const quantityElement = document.getElementById(`card-quantity-${productID}`);
+      const quantity = parseInt(quantityElement.textContent)
+      let newQuantity;
+      if (operacion === "+") {
+        newQuantity = quantity + 1;
+      } else {
+        newQuantity = quantity - 1;
+        newQuantity <= 0 ? (newQuantity=1):null;
+      }
+      await fetch(`/api/carts/${cartID}/product/${productID}`, {
+        method: "PUT",
+        body: `${newQuantity}`,
+        headers: {
+          "Content-Type": "text/plain",
+        },
+      });
+      await calcularTotal(newQuantity - quantity, price);
+      quantityElement.textContent = String(newQuantity);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+  async function calcularTotal(cantidad, precio) {
+    try {
+      if (typeof calcularTotal.total === "undefined") {
+        calcularTotal.total = 0;
+      }
+      calcularTotal.total += cantidad * precio;
+      const total = document.getElementById("total-price");
+      total.innerHTML = calcularTotal.total;
+    } catch (error) {
+     console.log(error); 
+    }
+  }
+  
+  async function deleteProductInCart(idProduct){
+    try {
+      const userCart = await fetch("/api/carts/getUserCart", { method: "GET" });
+      const responseJson = await userCart.json();
+      const cartID = responseJson.cartProducts._id;
+      await fetch(`/api/carts/${cartID}/product/${idProduct}`, { method: "DELETE" });
+      location.reload()
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  

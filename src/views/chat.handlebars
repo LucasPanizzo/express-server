@@ -1,13 +1,18 @@
 <div class="chatLayout">
     <h4>CHAT</h4>
-
+    <p>USER: <n id="user-name">{{user.full_name}}</n>
+    </p>
+    {{#if condition}}
     <form id="form">
         <input type="text" name="message" id="message">
         <input type="submit" value="Enviar">
     </form>
 
     <p id="chat"></p>
+    {{else}}
+    <h2>El chat solo está disponible para los usuarios.</h2>
+    {{/if}}
 </div>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="js/chat.js"></script>

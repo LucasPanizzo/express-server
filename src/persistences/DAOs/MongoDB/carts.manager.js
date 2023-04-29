@@ -1,9 +1,10 @@
+// Imports
 import { cartsModels } from "../../MongoDB/models/carts.models.js";
 import { ticketsModels } from "../../MongoDB/models/tickets.models.js";
 import { updateProductService, getProductsByIDService } from "../../../services/products.services.js"
 
 export default class cartManager {
-
+    // Trae todos los carts creados con el modelo correspondiente
     async getCarts() {
         try {
             const cartsList = await cartsModels.find({}).lean()
@@ -12,6 +13,7 @@ export default class cartManager {
             console.log(error);
         }
     }
+    // Trae un cart en especifico mediante el ID
     async getCartByID(id) {
         try {
             const cart = await cartsModels.findById(id)
@@ -20,6 +22,7 @@ export default class cartManager {
             console.log(error);
         }
     }
+    // Trae el carrito y pasa por el .pre de models para usar populate
     async findCartAndPoblate(id) {
         try {
             const cart = await cartsModels.find({ _id: id }).lean()
@@ -28,6 +31,7 @@ export default class cartManager {
             console.log(error)
         }
     }
+    // Crea un cart con el modelo designado
     async addCart() {
         try {
             const newCart = await cartsModels.create({})
@@ -36,21 +40,25 @@ export default class cartManager {
             console.log(error);
         }
     }
+    // Devuelve un producto especifico dentro de un cart especifico
     async findProductInCart(idCart, idProduct) {
         try {
             const cart = await this.getCartByID(idCart)
             const productsArray = cart.products
             const productExists = productsArray.find((el) => el.productId.toHexString() === idProduct)
+            // Busca el producto existente dentro del array. La verificación de la existencia del producto se hace desde el controller, antes de pasar por el router.
             return productExists
         } catch (error) {
             console.log(error);
         }
     }
+    // Agrega un producto al carrito
     async addToCart(idCart, idProduct) {
         try {
             const cart = await this.getCartByID(idCart)
             const productsArray = cart.products
             const product = await this.findProductInCart(idCart, idProduct)
+            // Busca el producto a agregar, si existe, modifica la cantidad, sino existe, lo crea y pushea al carrito.
             if (product) {
                 const newQuantity = product.quantity + 1
                 const actCart = await this.modifyProductQuantity(idCart, idProduct, newQuantity)
@@ -68,6 +76,7 @@ export default class cartManager {
             console.log(error);
         }
     }
+    // Elimina un producto de un carrito especificos
     async deleteProduct(idCart, idProduct) {
         try {
             const cart = await this.getCartByID(idCart)
@@ -84,6 +93,7 @@ export default class cartManager {
             console.log(error);
         }
     }
+    // Cambia la propiedad quantity de un producto especifico
     async modifyProductQuantity(idCart, idProduct, quantity) {
         try {
             const filter = { _id: idCart, "products.productId": idProduct };
@@ -94,6 +104,7 @@ export default class cartManager {
             console.log(error)
         }
     }
+    // Elimina todos los productos dentro del cart
     async emptyCart(idCart) {
         try {
             const cart = await this.getCartByID(idCart)
@@ -104,9 +115,9 @@ export default class cartManager {
             console.log(error);
         }
     }
+    // Reemplaza los productos existentes de un cart, por los que le lleguen de propiedad en forma de array
     async updateProductsInCart(products, idCart) {
         try {
-            console.log(products,idCart);
             const cart = await this.getCartByID(idCart)
             await this.emptyCart(idCart)
             products.forEach(element => {
@@ -118,37 +129,44 @@ export default class cartManager {
             console.log(error);
         }
     }
+    // Funcion para finalizar compra
     async purchaseProductsInCart(idCart, email) {
         try {
           const cart = await this.getCartByID(idCart);
           const productsInCart = cart.products;
           let prices = [];
           let productsNoStock = [];
-      
+          let productsStocked = [];
+          // Ciclo for, se reproduce segun la cantidad de productos que haya en el cart
           for (let i = 0; i < productsInCart.length; i++) {
+            // Recupera el producto
             const product = await getProductsByIDService(
               productsInCart[i].productId.toHexString()
             );
-      
+            // Checkea el stock, si el producto tiene stock; se suma el precio del producto al precio total de la compra, se modifica el stock del producto en la base de datos, se agrega al producto a un array para poder recuperarlos luego y se elimina del carrito para finalizar la compra.
             if (product.stock >= productsInCart[i].quantity) {
               let subTotal = product.price * productsInCart[i].quantity;
               prices.push(subTotal);
               const newStock = product.stock - productsInCart[i].quantity;
+              productsStocked.push(productsInCart[i])
               await this.deleteProduct(idCart, productsInCart[i].productId.toHexString());
               await updateProductService(productsInCart[i].productId.toHexString(), {
                 stock: newStock,
               });
             } else {
+              // Si el producto no tiene stock, solo se agrega a un array para ser recuperado más tarde por otras funciones.
               productsNoStock.push(productsInCart[i].productId.toHexString());
             }
           }
-         await this.#ticketGenerator(prices, email);
-         return productsNoStock
-
+         // Checkeo si existe algún producto con stock, para no envíar tickets vacios a la DB.
+         if(productsStocked.length != 0){
+            await this.#ticketGenerator(prices, email);}
+         return {productsNoStock,productsStocked}
         } catch (error) {
           console.log(error);
         }
       }
+    // Envia tickets con los datos de la compra a la DB
     async #ticketGenerator(prices, email) {
         const totalPrice = prices.reduce((acc, el) => acc + el, 0)
         const code = await this.#codeGenerator()
@@ -161,6 +179,7 @@ export default class cartManager {
         const newTicket = await ticketsModels.create(ticket)
         return newTicket
     }
+    // Genera automaticamente un código para cada ticket
     async #codeGenerator() {
         try {
             const ticketsList = await ticketsModels.find({})
@@ -172,67 +191,6 @@ export default class cartManager {
         } catch (error) {
             console.log(error)
         }
-    }
-    // async purchaseProductsInCart(idCart, email) {
-    //     try {
-    //         const cart = await this.getCartByID(idCart)
-    //         const productsInCart = cart.products
-    //         let prices = []
-    //         let productsNoStock = []
-    //         const promises = productsInCart.map(async e => {
-    //             const product = await getProductsByIDService(e.productId.toHexString())
-    //             if (product.stock >= e.quantity) {
-    //                 let subTotal = product.price * e.quantity
-    //                 prices.push(subTotal)
-    //                 const newStock = product.stock - e.quantity
-    //                 await updateProductService(e.productId.toHexString(), { stock: newStock })
-    //                 return {
-    //                     productId: e.productId.toHexString(),
-    //                     quantity: e.quantity
-    //                 }
-    //             } else {
-    //                 productsNoStock.push(e.productId.toHexString())
-    //                 return null
-    //             }
-    //         })
-    //         const productsBought = (await Promise.all(promises)).filter(e => e)
-    //         if (productsBought.length > 0) {
-    //             await this.deleteProducts(idCart, productsBought)
-    //             await this.#ticketGenerator(prices, email)
-    //         }
-    //         if (productsNoStock.length > 0) {
-    //             await this.updateCartProducts(idCart, productsNoStock)
-    //             return productsNoStock
-    //         }
-    //         return []
-    //     } catch (error) {
-    //         console.log(error);
-    //         return []
-    //     }
-    // }
-    // async purchaseProductsInCart(idCart, email) {
-    //     try {
-    //         const cart = await this.getCartByID(idCart)
-    //         const productsInCart = cart.products
-    //         let prices = []
-    //         let productsNoStock = []
-    //         productsInCart.forEach(async e => {
-    //             const product = await getProductsByIDService(e.productId.toHexString())
-    //             if (product.stock > e.quantity) {
-    //                 let subTotal = product.price * e.quantity
-    //                 prices.push(subTotal)
-    //                 const newStock = product.stock - e.quantity
-    //                 await this.deleteProduct(idCart, e.productId.toHexString())
-    //                 await updateProductService(e.productId.toHexString(), { stock: newStock })
-    //                 await this.#ticketGenerator(prices,email)
-    //             } else {
-    //                 this.updateProductsInCart(productsNoStock, idCart)
-    //             }
-    //         })
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
-      
+    }    
 }
 
