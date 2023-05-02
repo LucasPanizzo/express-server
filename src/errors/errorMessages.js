@@ -26,7 +26,9 @@ export const ErrorsName = {
     USER_WRONGDATA_ERROR: 'No se encontro el elemento con la información especificada.',
     USER_ADD_ERROR: 'Hubo un problema para añadir el user a la base de datos.',
 
-    SESSION_INVALID_ERROR: 'Debes iniciar sesión.'
+    SESSION_INVALID_ERROR: 'Debes iniciar sesión.',
+
+    AUTH_INVALIDROL_ERROR: 'No estas autorizado para realizar esta acción.'
   }
   
   export const ErrorsCause = {
@@ -49,5 +51,7 @@ export const ErrorsName = {
     USER_WRONGDATA_CAUSE: 'Información invalida.',
     USER_ADD_CAUSE: 'Debes envíar todos los datos necesarios.',
 
-    SESSION_INVALID_CAUSE: 'No tienes ninguna sesión activa.'
+    SESSION_INVALID_CAUSE: 'No tienes ninguna sesión activa.',
+
+    AUTH_INVALIDROL_CAUSE: 'Rol invalido.'
   }

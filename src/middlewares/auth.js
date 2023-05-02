@@ -1,4 +1,6 @@
 import { currentSessionService } from "../services/users.services.js"
+import CustomError from "../errors/newError.js";
+import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 
 async function getRole(info) {
   const sessionInfo = await currentSessionService(info)
@@ -11,7 +13,11 @@ export const verificarAdmin = async (req, res, next) => {
   if (sessionRol === 'admin') {
     next()
   } else {
-    console.log('No estas autorizado para realizar esta operacion')
+    CustomError.createCustomError({
+      name: ErrorsName.SESSION_ERROR,
+      cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+      message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+  });
   }
 }
 
@@ -20,6 +26,10 @@ export const verificarUsuario = async (req, res, next) => {
   if (sessionRol === 'user') {
     next()
   } else {
-    console.log('No estas autorizado para realizar esta operacion')
+    CustomError.createCustomError({
+      name: ErrorsName.SESSION_ERROR,
+      cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+      message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+  });
   }
 }
