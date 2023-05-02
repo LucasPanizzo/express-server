@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { verificarUsuario } from "../middlewares/auth.js";
+import { mockingProductsController } from "../controllers/products.controllers.js";
 import { writeProductsController } from "../controllers/products.controllers.js";
 import { writeCartsController } from "../controllers/carts.controllers.js";
 import { currentSessionService } from "../services/users.services.js";
@@ -45,5 +46,7 @@ router.get('/chathandlebars',async(req,res)=>{
 })
 
 router.get('/cart',writeCartsController)
+
+router.post('/mockingproducts',mockingProductsController)
 
 export default router
