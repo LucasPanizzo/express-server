@@ -1,14 +1,19 @@
 import { addCartService, getCartsService, getCartByIDService, addToCartService, deleteProductService, emptyCartService, updateProductsInCartService, modifyProductQuantityService, purchaseService } from "../services/carts.services.js"
 import { getProductsByIDService } from '../services/products.services.js'
 import { currentSessionService } from "../services/users.services.js"
-
+import CustomError from "../errors/newError.js";
+import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 
 export const addCartController = async (req, res) => {
     try {
         await addCartService()
         res.send('carrito creado con exito')
-    } catch (error) {
-        console.log(error);
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_ADDCARTFAIL_CAUSE,
+            message: ErrorsMessage.CART_ADDCARTFAIL_ERROR
+        });
     }
 }
 
@@ -16,8 +21,12 @@ export const getCartsController = async (req, res) => {
     try {
         const carts = await getCartsService()
         res.json({ message: 'Lista de carritos:', carts })
-    } catch (error) {
-        console.log(error);
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_EMPTYLIST_CAUSE,
+            message: ErrorsMessage.CART_EMPTYLIST_ERROR
+        });
     }
 }
 
@@ -25,14 +34,14 @@ export const getCartByIDController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const searchedCart = await getCartByIDService(cartID)
-        if (searchedCart) {
-            const cartProducts = searchedCart[0].products
-            res.json({ message: 'Carrito encontrado', cartProducts })
-        } else {
-            res.send('El carrito buscado no existe en la base de datos.')
-        }
-    } catch (error) {
-        console.log('error');
+        const cartProducts = searchedCart[0].products
+        res.json({ message: 'Carrito encontrado', cartProducts })
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_WRONGID_CAUSE,
+            message: ErrorsMessage.CART_WRONGID_ERROR
+        });
     }
 }
 
@@ -40,14 +49,14 @@ export const getUserCart = async (req, res) => {
     try {
         const cartID = req.session.userInfo.userCart
         const searchedCart = await getCartByIDService(cartID)
-        if (searchedCart) {
-            const cartProducts = searchedCart[0]
-            res.json({ message: 'Carrito encontrado', cartProducts })
-        } else {
-            res.send('El carrito buscado no existe en la base de datos.')
-        }
-    } catch (error) {
-        console.log('error');
+        const cartProducts = searchedCart[0]
+        res.json({ message: 'Carrito encontrado', cartProducts })
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_WRONGID_CAUSE,
+            message: ErrorsMessage.CART_WRONGID_ERROR
+        });
     }
 }
 
@@ -55,20 +64,14 @@ export const addToCartController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const productID = req.params.pid
-        const searchedCart = await getCartByIDService(cartID)
-        if (searchedCart) {
-            const productFound = await getProductsByIDService(productID)
-            if (productFound) {
-                await addToCartService(cartID, productID)
-                res.send('Producto agregado con exito.')
-            } else {
-                res.send('El producto que quieres agregar no existe')
-            }
-        } else {
-            res.send('El carrito buscado no existe')
-        }
-    } catch (error) {
-        console.log('error');
+        await addToCartService(cartID, productID)
+        res.send('Producto agregado con exito.')
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_WRONGID_CAUSE,
+            message: ErrorsMessage.CART_WRONGID_ERROR
+        });
     }
 }
 
@@ -76,35 +79,28 @@ export const deleteProductController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const productID = req.params.pid
-        const searchedCart = await getCartByIDService(cartID)
-        if (searchedCart) {
-            const productFound = await getProductsByIDService(productID)
-            if (productFound) {
-                await deleteProductService(cartID, productID)
-                res.send('Producto eliminado con exito.')
-            } else {
-                res.send('El producto que quieres eliminar no se encuentra en el carrito.')
-            }
-        } else {
-            res.send('El carrito buscado no existe')
-        }
-    } catch (error) {
-        console.log('error');
+        await deleteProductService(cartID, productID)
+        res.send('Producto eliminado con exito.')
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_WRONGID_CAUSE,
+            message: ErrorsMessage.CART_WRONGID_ERROR
+        });
     }
 }
 
 export const emptyCartController = async (req, res) => {
     try {
         const cartID = req.params.cid
-        const searchedCart = await getCartByIDService(cartID)
-        if (searchedCart) {
-            await emptyCartService(cartID)
-            res.send('Carrito vaciado con exito.')
-        } else {
-            res.send('El carrito buscado no existe en la base de datos.')
-        }
-    } catch (error) {
-        console.log('error');
+        await emptyCartService(cartID)
+        res.send('Carrito vaciado con exito.')
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_WRONGID_CAUSE,
+            message: ErrorsMessage.CART_WRONGID_ERROR
+        });
     }
 }
 
@@ -112,15 +108,14 @@ export const updateProductsInCartController = async (req, res) => {
     try {
         const cartID = req.params.cid
         const products = req.body
-        const searchedCart = await getCartByIDService(cartID)
-        if (searchedCart) {
-            await updateProductsInCartService(products, cartID)
-            res.send('Carrito modificado con exito.')
-        } else {
-            res.send('El carrito buscado no existe en la base de datos.')
-        }
-    } catch (error) {
-        console.log('error');
+        await updateProductsInCartService(products, cartID)
+        res.send('Carrito modificado con exito.')
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_EMPTYFIELD_CAUSE,
+            message: ErrorsMessage.CART_EMPTYFIELD_ERROR
+        });
     }
 }
 
@@ -129,20 +124,14 @@ export const modifyProductQuantityController = async (req, res) => {
         const cartID = req.params.cid
         const productID = req.params.pid
         const quantity = parseInt(req.body)
-        const searchedCart = await getCartByIDService(cartID)
-        if (searchedCart) {
-            const productFound = await getProductsByIDService(productID)
-            if (productFound) {
-                await modifyProductQuantityService(cartID, productID, quantity)
-                res.send('Cantidad modificada con exito.')
-            } else {
-                res.send('El producto que quieres modificar no se encuentra en el carrito.')
-            }
-        } else {
-            res.send('El carrito buscado no existe')
-        }
-    } catch (error) {
-        console.log('error');
+        await modifyProductQuantityService(cartID, productID, quantity)
+        res.send('Cantidad modificada con exito.')
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_WRONGQUANTITY_CAUSE,
+            message: ErrorsMessage.CART_WRONGQUANTITY_ERROR
+        });
     }
 }
 
@@ -154,19 +143,31 @@ export const purchaseController = async (req, res) => {
         const response = await purchaseService(cartID, email)
         const remainingProducts = response.productsNoStock
         if (remainingProducts.length != 0) {
-        res.json({message:`Los siguientes productos no tienen stock suficiente para ser comprados: ${remainingProducts}`})
+            res.json({ message: `Los siguientes productos no tienen stock suficiente para ser comprados: ${remainingProducts}` })
         } else {
-            res.json({message:`Compra realiza con éxito`})
+            res.json({ message: `Compra realiza con éxito` })
         }
-    } catch (error) {
-        console.log(error);
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_WRONGID_CAUSE,
+            message: ErrorsMessage.CART_WRONGID_ERROR
+        }); 
     }
 }
 
-export const writeCartsController = async (req,res)=>{
-    const session = await currentSessionService(await req.session.userInfo)
-    const userCartID = session.userCart
-    const cart = await getCartByIDService(userCartID)
-    const products = cart[0].products
-    res.render('cart',{"products":products})
+export const writeCartsController = async (req, res) => {
+    try {
+        const session = await currentSessionService(await req.session.userInfo)
+        const userCartID = session.userCart
+        const cart = await getCartByIDService(userCartID)
+        const products = cart[0].products
+        res.render('cart', { "products": products })
+    } catch {
+        CustomError.createCustomError({
+            name: ErrorsName.CART_ERROR,
+            cause: ErrorsCause.CART_WRONGID_CAUSE,
+            message: ErrorsMessage.CART_WRONGID_ERROR
+        }); 
+    }
 }

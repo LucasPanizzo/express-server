@@ -1,5 +1,5 @@
 import {Router } from "express";
-import { getProductsController,getProductsByIDController,addProductController,deleteProductController,updateProductController } from "../controllers/products.controllers.js";
+import { getProductsController,getProductsByIDController,addProductController,deleteProductController,updateProductController,mockingProductsController } from "../controllers/products.controllers.js";
 import { verificarAdmin } from "../middlewares/auth.js";
 
 const router = Router()
@@ -71,5 +71,7 @@ router.put('/:idProduct',verificarAdmin,updateProductController
 //     }
 // }
 )
+
+router.post('/mockingproducts',mockingProductsController)
 
 export default router

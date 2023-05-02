@@ -2,6 +2,8 @@
 import { cartsModels } from "../../MongoDB/models/carts.models.js";
 import { ticketsModels } from "../../MongoDB/models/tickets.models.js";
 import { updateProductService, getProductsByIDService } from "../../../services/products.services.js"
+import CustomError from "../../../errors/newError.js";
+import { ErrorsCause,ErrorsMessage,ErrorsName } from "../../../errors/errorMessages.js";
 
 export default class cartManager {
     // Trae todos los carts creados con el modelo correspondiente
@@ -9,8 +11,12 @@ export default class cartManager {
         try {
             const cartsList = await cartsModels.find({}).lean()
             return cartsList
-        } catch (error) {
-            console.log(error);
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_EMPTYLIST_CAUSE,
+                message: ErrorsMessage.CART_EMPTYLIST_ERROR
+            });
         }
     }
     // Trae un cart en especifico mediante el ID
@@ -18,17 +24,25 @@ export default class cartManager {
         try {
             const cart = await cartsModels.findById(id)
             return cart
-        } catch (error) {
-            console.log(error);
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            });
         }
     }
     // Trae el carrito y pasa por el .pre de models para usar populate
     async findCartAndPoblate(id) {
         try {
             const cart = await cartsModels.find({ _id: id }).lean()
-            return cart
-        } catch (error) {
-            console.log(error)
+            return cart 
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            }); 
         }
     }
     // Crea un cart con el modelo designado
@@ -36,8 +50,12 @@ export default class cartManager {
         try {
             const newCart = await cartsModels.create({})
             return newCart
-        } catch (error) {
-            console.log(error);
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_ADD_CAUSE,
+                message: ErrorsMessage.CART_ADD_ERROR
+            });
         }
     }
     // Devuelve un producto especifico dentro de un cart especifico
@@ -48,8 +66,12 @@ export default class cartManager {
             const productExists = productsArray.find((el) => el.productId.toHexString() === idProduct)
             // Busca el producto existente dentro del array. La verificación de la existencia del producto se hace desde el controller, antes de pasar por el router.
             return productExists
-        } catch (error) {
-            console.log(error);
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            });
         }
     }
     // Agrega un producto al carrito
@@ -58,22 +80,34 @@ export default class cartManager {
             const cart = await this.getCartByID(idCart)
             const productsArray = cart.products
             const product = await this.findProductInCart(idCart, idProduct)
-            // Busca el producto a agregar, si existe, modifica la cantidad, sino existe, lo crea y pushea al carrito.
-            if (product) {
-                const newQuantity = product.quantity + 1
-                const actCart = await this.modifyProductQuantity(idCart, idProduct, newQuantity)
-                return actCart
-            } else {
-                const product = {
-                    quantity: 1,
-                    productId: idProduct
+            const isARealProduct = await getProductsByIDService(idProduct)
+            if (isARealProduct) {
+                if (product) {
+                    const newQuantity = product.quantity + 1
+                    const actCart = await this.modifyProductQuantity(idCart, idProduct, newQuantity)
+                    return actCart
+                } else {
+                    const product = {
+                        quantity: 1,
+                        productId: idProduct
+                    }
+                    productsArray.push(product)
+                    await cart.save()
+                    return cart
                 }
-                productsArray.push(product)
-                await cart.save()
-                return cart
+            } else{
+                CustomError.createCustomError({
+                    name: ErrorsName.CART_ERROR,
+                    cause: ErrorsCause.CART_WRONGID_CAUSE,
+                    message: ErrorsMessage.CART_WRONGID_ERROR
+                });
             }
-        } catch (error) {
-            console.log(error);
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            });
         }
     }
     // Elimina un producto de un carrito especificos
@@ -81,27 +115,52 @@ export default class cartManager {
         try {
             const cart = await this.getCartByID(idCart)
             const productToDeleteIndex = cart.products.findIndex(e => e.productId == idProduct)
-            if (productToDeleteIndex !== -1) {
-                cart.products.splice(productToDeleteIndex, 1);
-                const updatedCart = await cart.save()
-                return updatedCart
+            const isARealProduct = await getProductsByIDService(idProduct)
+            if (isARealProduct) {
+                if (productToDeleteIndex !== -1) {
+                    cart.products.splice(productToDeleteIndex, 1);
+                    const updatedCart = await cart.save()
+                    return updatedCart
+                }
+                else {
+                    return undefined
+                }
+            } else{
+                CustomError.createCustomError({
+                    name: ErrorsName.CART_ERROR,
+                    cause: ErrorsCause.CART_WRONGID_CAUSE,
+                    message: ErrorsMessage.CART_WRONGID_ERROR
+                }); 
             }
-            else {
-                return undefined
-            }
-        } catch (error) {
-            console.log(error);
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            });
         }
     }
     // Cambia la propiedad quantity de un producto especifico
     async modifyProductQuantity(idCart, idProduct, quantity) {
         try {
-            const filter = { _id: idCart, "products.productId": idProduct };
-            const update = { $set: { "products.$.quantity": quantity } }
-            const updatedCartProduct = await cartsModels.findOneAndUpdate(filter, update, { new: true });
-            return updatedCartProduct
-        } catch (error) {
-            console.log(error)
+            if (quantity > 0) {
+                const filter = { _id: idCart, "products.productId": idProduct };
+                const update = { $set: { "products.$.quantity": quantity } }
+                const updatedCartProduct = await cartsModels.findOneAndUpdate(filter, update, { new: true });
+                return updatedCartProduct
+            } else {
+                CustomError.createCustomError({
+                    name: ErrorsName.CART_ERROR,
+                    cause: ErrorsCause.CART_WRONGQUANTITY_CAUSE,
+                    message: ErrorsMessage.CART_WRONGQUANTITY_ERROR
+                }); 
+            }
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            });
         }
     }
     // Elimina todos los productos dentro del cart
@@ -111,22 +170,38 @@ export default class cartManager {
             cart.products = []
             await cart.save()
             return cart
-        } catch (error) {
-            console.log(error);
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            });
         }
     }
     // Reemplaza los productos existentes de un cart, por los que le lleguen de propiedad en forma de array
     async updateProductsInCart(products, idCart) {
         try {
-            const cart = await this.getCartByID(idCart)
-            await this.emptyCart(idCart)
-            products.forEach(element => {
-                cart.products.push(element)
+            if (products.length != 0) {
+                const cart = await this.getCartByID(idCart)
+                await this.emptyCart(idCart)
+                products.forEach(element => {
+                    cart.products.push(element)
+                });
+                await cart.save()
+                return cart
+            } else {
+                CustomError.createCustomError({
+                    name: ErrorsName.CART_ERROR,
+                    cause: ErrorsCause.CART_EMPTYFIELD_CAUSE,
+                    message: ErrorsMessage.CART_EMPTYFIELD_ERROR
+                });
+            }
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
             });
-            await cart.save()
-            return cart
-        } catch (error) {
-            console.log(error);
         }
     }
     // Funcion para finalizar compra
@@ -162,8 +237,12 @@ export default class cartManager {
          if(productsStocked.length != 0){
             await this.#ticketGenerator(prices, email);}
          return {productsNoStock,productsStocked}
-        } catch (error) {
-          console.log(error);
+        } catch{
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            });
         }
       }
     // Envia tickets con los datos de la compra a la DB
@@ -188,8 +267,8 @@ export default class cartManager {
                 code = parseInt(ticketsList[ticketsList.length - 1].code) + 1
             }
             return code
-        } catch (error) {
-            console.log(error)
+        } catch{
+            console.log('Cart Manager error:',error)
         }
     }    
 }

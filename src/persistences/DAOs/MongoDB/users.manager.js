@@ -1,15 +1,19 @@
 import { usersModels } from "../../MongoDB/models/users.models.js";
-import { cryptedPassword,comparePasswords } from "../../../utilities.js";
+import { comparePasswords } from "../../../utilities.js";
 import config from "../../../config.js";
-import CurrentDTO from "../../DTOs/current.dto.js";
-
+import CustomError from "../../../errors/newError.js";
+import { ErrorsCause,ErrorsMessage,ErrorsName } from "../../../errors/errorMessages.js";
 export default class userManager {
     async createUser(user) {
         try {
             const newUser = await usersModels.create(user)
             return newUser
-        } catch (error) {
-            console.log(error);
+        } catch {
+            CustomError.createCustomError({
+                name: ErrorsName.USER_ERROR,
+                cause: ErrorsCause.USER_ADD_CAUSE,
+                message: ErrorsMessage.USER_ADD_ERROR
+            });
         }
     }
     async getUser(email,password) {
@@ -37,8 +41,12 @@ export default class userManager {
                     return null
                     }
             }
-        } catch (error) {
-            console.log(error);
+        } catch {
+            CustomError.createCustomError({
+                name: ErrorsName.USER_ERROR,
+                cause: ErrorsCause.USER_WRONGDATA_CAUSE,
+                message: ErrorsMessage.USER_WRONGDATA_ERROR
+            });
         }
     }
 }

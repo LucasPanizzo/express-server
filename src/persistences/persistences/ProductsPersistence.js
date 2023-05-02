@@ -38,3 +38,11 @@ export async function deleteProduct(productID) {
 export async function updateProduct(productID, act) {
     return await persistence.updateProduct(productID, act)
 }
+
+export async function addMockingProducts(){
+    return await persistence.addMockingProducts()
+}
+
+export async function getMockingProducts(){
+    return await persistence.getMockingProducts()
+}
