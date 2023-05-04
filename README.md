@@ -28,7 +28,7 @@ users:
 "/api/users/githubRegister": Registra un usuario de github.
 
 sessions:
-"/api/sessions/current): Trae la información de la session actual.
+"/api/sessions/current: Trae la información de la session actual.
 
 views:
 "/": login page.
@@ -40,3 +40,7 @@ views:
 "/realtimeproducts": crea productos y los visualiza en tiempo real.
 "/chathabdlebars": chat funcional con handlebars
 "/cart": Carrito de compras ligado a la session
+"/mockingproducts": Crea 100 mockings con el modelo de productos.
+
+logger:
+"/loggerTest": Ejecuta todos los loggers.

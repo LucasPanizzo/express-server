@@ -3,12 +3,14 @@ import { comparePasswords } from "../../../utilities.js";
 import config from "../../../config.js";
 import CustomError from "../../../errors/newError.js";
 import { ErrorsCause,ErrorsMessage,ErrorsName } from "../../../errors/errorMessages.js";
+import logger from "../../../winston.js";
 export default class userManager {
     async createUser(user) {
         try {
             const newUser = await usersModels.create(user)
             return newUser
         } catch {
+            logger.error(ErrorsMessage.USER_ADD_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_ADD_CAUSE,
@@ -42,6 +44,7 @@ export default class userManager {
                     }
             }
         } catch {
+            logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,

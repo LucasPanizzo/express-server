@@ -37,7 +37,6 @@ function añadirAlCarrito(id){
 }
 // Funcion que escribe los productos en el DOM mediante una card.
 socketClient.on('writeProducts',async (products)=>{
-  console.log(products);
     let productList = ''
     await products.forEach((product)=>{
         productList += `<div class="card" style="width: 18rem;">

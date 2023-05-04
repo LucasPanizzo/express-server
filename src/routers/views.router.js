@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { verificarUsuario } from "../middlewares/auth.js";
 import { mockingProductsController } from "../controllers/products.controllers.js";
 import { writeProductsController } from "../controllers/products.controllers.js";
 import { writeCartsController } from "../controllers/carts.controllers.js";
-import { currentSessionService } from "../services/users.services.js";
+import { chatControllers } from "../controllers/chats.controllers.js"
 
 const router = Router()
 
@@ -34,16 +33,7 @@ router.get('/realtimeproducts',async(req,res)=>{
 })
 
 
-router.get('/chathandlebars',async(req,res)=>{
-    const userInfo = await currentSessionService(req.session.userInfo)
-    let condition
-    if (userInfo.rol === "user") {
-        condition = true
-    } else {
-        condition = false
-    }
-    res.render('chat',{"user":userInfo,"condition":condition})
-})
+router.get('/chathandlebars',chatControllers)
 
 router.get('/cart',writeCartsController)
 

@@ -1,14 +1,15 @@
 import { addCartService, getCartsService, getCartByIDService, addToCartService, deleteProductService, emptyCartService, updateProductsInCartService, modifyProductQuantityService, purchaseService } from "../services/carts.services.js"
-import { getProductsByIDService } from '../services/products.services.js'
 import { currentSessionService } from "../services/users.services.js"
 import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
+import logger from "../winston.js";
 
 export const addCartController = async (req, res) => {
     try {
         await addCartService()
         res.send('carrito creado con exito')
     } catch {
+        logger.error(ErrorsMessage.CART_ADDCARTFAIL_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_ADDCARTFAIL_CAUSE,
@@ -22,6 +23,7 @@ export const getCartsController = async (req, res) => {
         const carts = await getCartsService()
         res.json({ message: 'Lista de carritos:', carts })
     } catch {
+        logger.error(ErrorsMessage.CART_EMPTYLIST_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_EMPTYLIST_CAUSE,
@@ -37,6 +39,7 @@ export const getCartByIDController = async (req, res) => {
         const cartProducts = searchedCart[0].products
         res.json({ message: 'Carrito encontrado', cartProducts })
     } catch {
+        logger.error(ErrorsMessage.CART_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -52,6 +55,7 @@ export const getUserCart = async (req, res) => {
         const cartProducts = searchedCart[0]
         res.json({ message: 'Carrito encontrado', cartProducts })
     } catch {
+        logger.error(ErrorsMessage.CART_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -67,6 +71,7 @@ export const addToCartController = async (req, res) => {
         await addToCartService(cartID, productID)
         res.send('Producto agregado con exito.')
     } catch {
+        logger.error(ErrorsMessage.CART_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -82,6 +87,7 @@ export const deleteProductController = async (req, res) => {
         await deleteProductService(cartID, productID)
         res.send('Producto eliminado con exito.')
     } catch {
+        logger.error(ErrorsMessage.CART_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -96,6 +102,7 @@ export const emptyCartController = async (req, res) => {
         await emptyCartService(cartID)
         res.send('Carrito vaciado con exito.')
     } catch {
+        logger.error(ErrorsMessage.CART_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -111,6 +118,7 @@ export const updateProductsInCartController = async (req, res) => {
         await updateProductsInCartService(products, cartID)
         res.send('Carrito modificado con exito.')
     } catch {
+        logger.error(ErrorsMessage.CART_EMPTYFIELD_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_EMPTYFIELD_CAUSE,
@@ -127,6 +135,7 @@ export const modifyProductQuantityController = async (req, res) => {
         await modifyProductQuantityService(cartID, productID, quantity)
         res.send('Cantidad modificada con exito.')
     } catch {
+        logger.error(ErrorsMessage.CART_WRONGQUANTITY_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGQUANTITY_CAUSE,
@@ -148,6 +157,7 @@ export const purchaseController = async (req, res) => {
             res.json({ message: `Compra realiza con éxito` })
         }
     } catch {
+        logger.error(ErrorsMessage.CART_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -164,6 +174,7 @@ export const writeCartsController = async (req, res) => {
         const products = cart[0].products
         res.render('cart', { "products": products })
     } catch {
+        logger.error(ErrorsMessage.CART_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,

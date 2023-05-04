@@ -1,5 +1,8 @@
 import fs from 'fs'
 const path = './database/products.json'
+import CustomError from "../../../errors/newError.js";
+import { ErrorsCause, ErrorsMessage, ErrorsName } from "../../../errors/errorMessages.js";
+import logger from "../../../winston.js";
 
 
 export default class ProductManager {
@@ -18,8 +21,13 @@ export default class ProductManager {
             } else {
                 return []
             }
-        } catch (error) {
-            console.log(error);
+        } catch {
+            logger.error(ErrorsMessage.PRODUCT_EMPTYLIST_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.PRODUCT_ERROR,
+                cause: ErrorsCause.PRODUCT_EMPTYLIST_CAUSE,
+                message: ErrorsMessage.PRODUCT_EMPTYLIST_ERROR
+            });
         }
     }
     async addProduct(obj) {
@@ -28,16 +36,26 @@ export default class ProductManager {
             const product = {id: await this.#generarId(),...obj}
             productsList.push(product)
             await fs.promises.writeFile(path,JSON.stringify(productsList))
-        } catch (error) {
-            console.log(error);
+        } catch {
+            logger.error(ErrorsMessage.PRODUCT_ADD_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.PRODUCT_ERROR,
+                cause: ErrorsCause.PRODUCT_ADD_CAUSE,
+                message: ErrorsMessage.PRODUCT_ADD_ERROR
+            });
         }
     }
     async getProductsByID(id) {
         try {
             const productsList = await this.getProducts()
             return productsList.find((el) => el.id === id)
-        } catch (error) {
-            console.log(error)
+        } catch {
+            logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.PRODUCT_ERROR,
+                cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
+                message: ErrorsMessage.PRODUCT_WRONGID_ERROR
+            });
         }
     }
     async #generarId() {
@@ -48,8 +66,8 @@ export default class ProductManager {
               id = productsList[productsList.length - 1].id + 1
             }
             return id
-        } catch (error) {
-            console.log(error)
+        } catch {
+            logger.error('Error en la generación del código único del producto.')
         }
     }
     async deleteProduct(id){
@@ -57,8 +75,13 @@ export default class ProductManager {
             const productsList = await this.getProducts()
             let newProductsList = productsList.filter((el) => el.id != id);
             await fs.promises.writeFile(path,JSON.stringify(newProductsList))
-        } catch (error) {
-            console.log(error)
+        } catch {
+            logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.PRODUCT_ERROR,
+                cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
+                message: ErrorsMessage.PRODUCT_WRONGID_ERROR
+            });
         }
     }
     async updateProduct(id,actualizacion){
@@ -74,8 +97,13 @@ export default class ProductManager {
             }
            })
            await fs.promises.writeFile(path,JSON.stringify(listaAct))
-        } catch (error) {
-            console.log(error)
+        } catch {
+            logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.PRODUCT_ERROR,
+                cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
+                message: ErrorsMessage.PRODUCT_WRONGID_ERROR
+            });
         }
     }
 }

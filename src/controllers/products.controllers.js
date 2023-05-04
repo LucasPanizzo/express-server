@@ -1,6 +1,7 @@
 import { getProductsService, getProductsByIDService, addProductService, deleteProductService, updateProductService, addMockingProductsService, getMockingProductsService } from "../services/products.services.js";
 import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
+import logger from "../winston.js";
 
 export const getProductsController = async (req, res) => {
     try {
@@ -8,6 +9,7 @@ export const getProductsController = async (req, res) => {
         const products = await getProductsService(limit, page, sort, query)
         res.send(products)
     } catch {
+        logger.error(ErrorsMessage.PRODUCT_EMPTYLIST_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_EMPTYLIST_CAUSE,
@@ -22,6 +24,7 @@ export const getProductsByIDController = async (req, res) => {
         const searchedProduct = await getProductsByIDService(idProduct)
         res.json({ message: 'Producto encontrado', searchedProduct })
     } catch {
+        logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
@@ -35,6 +38,7 @@ export const addProductController = async (req, res) => {
         await addProductService(req.body)
         res.send('Producto creado con exito.')
     } catch {
+        logger.error(ErrorsCause.PRODUCT_ADD2_CAUSE)
         CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_ADD_CAUSE,
@@ -49,6 +53,7 @@ export const deleteProductController = async (req, res) => {
         await deleteProductService(idProduct)
         res.send('Producto eliminado con exito')
     } catch {
+        logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
@@ -67,6 +72,7 @@ export const updateProductController = async (req, res) => {
             await updateProductService(idProduct, actualizacion)
             res.send('Producto modificado con exito')
         } else {
+            logger.warn();(ErrorsMessage.PRODUCT_ADD_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_ADD_CAUSE,
@@ -74,6 +80,7 @@ export const updateProductController = async (req, res) => {
             });
         }
     } catch {
+        logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,

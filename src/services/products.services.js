@@ -32,6 +32,5 @@ export async function addMockingProductsService(){
 
 export async function getMockingProductsService(){
     const mockingsList = await getMockingProducts()
-    console.log('entra services');
     return mockingsList
 }

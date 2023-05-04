@@ -6,5 +6,6 @@ export default{
     URLMONGO: process.env.URLMONGO,
     ADMINMAIL: process.env.ADMINMAIL,
     ADMINPASSWORD: process.env.ADMINPASSWORD,
-    PERSISTENCES: [process.env.MONGOPERSISTENCE,process.env.FSPERSISTENCE]
+    PERSISTENCES: [process.env.MONGOPERSISTENCE,process.env.FSPERSISTENCE],
+    ENV: process.env.ENV
 }

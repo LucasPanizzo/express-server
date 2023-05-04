@@ -8,6 +8,7 @@ import carts from './routers/carts.router.js'
 import users from './routers/users.router.js'
 import jwt from './routers/jwt.router.js'
 import sessions from './routers/sessions.router.js'
+import loggerRouter from './routers/logger.router.js'
 import { __dirname } from './utilities.js'
 import './persistences/MongoDB/dbConfig.js'
 import session from 'express-session'
@@ -18,20 +19,24 @@ import config from './config.js'
 import { addToCartService } from './services/carts.services.js'
 import { getProductsService,addProductService,deleteProductService } from './services/products.services.js'
 import { getMessagesService,newMessageService } from './services/messages.services.js'
+
+import CustomError from './errors/newError.js'
+import { ErrorsCause, ErrorsMessage, ErrorsName } from "./errors/errorMessages.js";
+import logger from './winston.js'
 // Declarations
 const app = express()
 const port = config.PORT
 
 // Server
 const httpServer = app.listen(port,()=>{
-    console.log('Listening to port '+port);
+    logger.info('Listening to port '+port);
 })
 const socketServer = new Server(httpServer)
 // Socket configuration
 
 
 socketServer.on('connection',async(socket)=>{
-    console.log('cliente conectado');
+    logger.info('cliente conectado');
     //REALTIME PRODUCTS
         //Funcion que escribe los productos en el DOM
     const products = await getProductsService()
@@ -42,7 +47,12 @@ socketServer.on('connection',async(socket)=>{
         const products = await getProductsService()
         const productsList = products.payload
         if(await productsList.find((el) => el.code === obj.code)){
-            console.log('El producto que quieres agregar ya existe');
+            logger.warn(ErrorsMessage.PRODUCT_REPEATEDCODE_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.PRODUCT_ERROR,
+                cause: ErrorsCause.PRODUCT_REPEATEDCODE_CAUSE,
+                message: ErrorsMessage.PRODUCT_REPEATEDCODE_ERROR
+            });
         } else{
         await addProductService(obj)
         const products = await getProductsService()
@@ -94,6 +104,7 @@ app.use('/',views)
 app.use('/api/users',users)
 app.use('/jwt',jwt)
 app.use('/api/sessions',sessions)
+app.use('/loggerTest',loggerRouter)
 
 app.use(passport.initialize())
 app.use(passport.session())

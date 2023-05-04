@@ -1,5 +1,8 @@
 import fs from 'fs'
 const path = './database/carts.json'
+import CustomError from "../../../errors/newError.js";
+import { ErrorsCause,ErrorsMessage,ErrorsName } from "../../../errors/errorMessages.js";
+import logger from "../../../winston.js";
 
 export default class cartManager {
     constructor(path) {
@@ -13,16 +16,26 @@ export default class cartManager {
             } else {
                 return []
             }
-        } catch (error) {
-            console.log(error);
+        } catch {
+            logger.error(ErrorsMessage.CART_EMPTYLIST_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_EMPTYLIST_CAUSE,
+                message: ErrorsMessage.CART_EMPTYLIST_ERROR
+            });
         }
     }
     async getCartByID(id) {
         try {
             const cartsList = await this.getCarts()
             return await cartsList.find((el) => el.id === id);
-        } catch (error) {
-            console.log(error)
+        } catch {
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            });
         }
     }
     async addCart() {
@@ -34,8 +47,13 @@ export default class cartManager {
             }
             cartsList.push(newCart)
             await fs.promises.writeFile(path, JSON.stringify(cartsList))
-        } catch (error) {
-            console.log(error);
+        } catch {
+            logger.error(ErrorsMessage.CART_ADD_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_ADD_CAUSE,
+                message: ErrorsMessage.CART_ADD_ERROR
+            });
         }
     }
     async #generarId() {
@@ -46,8 +64,8 @@ export default class cartManager {
                 id = cartsList[cartsList.length - 1].id + 1
             }
             return id
-        } catch (error) {
-            console.log(error)
+        } catch {
+            logger.error('Error en la generación del código único del producto.')
         }
     }
     async addToCart(idCart, idProduct) {
@@ -82,8 +100,13 @@ export default class cartManager {
                 })
                 await fs.promises.writeFile(path, JSON.stringify(listaAct))
             }
-        } catch (error) {
-            console.log(error)
+        } catch {
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.CART_ERROR,
+                cause: ErrorsCause.CART_WRONGID_CAUSE,
+                message: ErrorsMessage.CART_WRONGID_ERROR
+            });
         }
     }
 

@@ -8,6 +8,7 @@ import { addCartService } from "../services/carts.services.js"
 import UsersDTO from "../persistences/DTOs/users.dto.js";
 import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
+import logger from "../winston.js";
 
 passport.use('register', new LocalStrategy({
     usernameField: 'email',
@@ -27,6 +28,7 @@ passport.use('register', new LocalStrategy({
             done(null, newUser)
         }
     } catch{
+        logger.error(ErrorsMessage.USER_ADD_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.USER_ERROR,
             cause: ErrorsCause.USER_ADD_CAUSE,
@@ -66,6 +68,7 @@ passport.use('login', new LocalStrategy(
                 }
             }
         } catch {
+            logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
@@ -98,6 +101,7 @@ passport.use('github', new GithubStrategy({
         }
     
     } catch {
+        logger.error(ErrorsMessage.USER_ADD_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.USER_ERROR,
             cause: ErrorsCause.USER_ADD_CAUSE,

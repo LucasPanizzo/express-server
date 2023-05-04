@@ -4,6 +4,7 @@ import { ticketsModels } from "../../MongoDB/models/tickets.models.js";
 import { updateProductService, getProductsByIDService } from "../../../services/products.services.js"
 import CustomError from "../../../errors/newError.js";
 import { ErrorsCause,ErrorsMessage,ErrorsName } from "../../../errors/errorMessages.js";
+import logger from "../../../winston.js";
 
 export default class cartManager {
     // Trae todos los carts creados con el modelo correspondiente
@@ -12,6 +13,7 @@ export default class cartManager {
             const cartsList = await cartsModels.find({}).lean()
             return cartsList
         } catch{
+            logger.error(ErrorsMessage.CART_EMPTYLIST_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_EMPTYLIST_CAUSE,
@@ -25,6 +27,7 @@ export default class cartManager {
             const cart = await cartsModels.findById(id)
             return cart
         } catch{
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -38,6 +41,7 @@ export default class cartManager {
             const cart = await cartsModels.find({ _id: id }).lean()
             return cart 
         } catch{
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -51,6 +55,7 @@ export default class cartManager {
             const newCart = await cartsModels.create({})
             return newCart
         } catch{
+            logger.error(ErrorsMessage.CART_ADD_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_ADD_CAUSE,
@@ -67,6 +72,7 @@ export default class cartManager {
             // Busca el producto existente dentro del array. La verificación de la existencia del producto se hace desde el controller, antes de pasar por el router.
             return productExists
         } catch{
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -96,6 +102,7 @@ export default class cartManager {
                     return cart
                 }
             } else{
+                logger.warn(ErrorsMessage.CART_WRONGID_ERROR)
                 CustomError.createCustomError({
                     name: ErrorsName.CART_ERROR,
                     cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -103,6 +110,7 @@ export default class cartManager {
                 });
             }
         } catch{
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -126,6 +134,7 @@ export default class cartManager {
                     return undefined
                 }
             } else{
+                logger.warn(ErrorsMessage.CART_WRONGID_ERROR)
                 CustomError.createCustomError({
                     name: ErrorsName.CART_ERROR,
                     cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -133,6 +142,7 @@ export default class cartManager {
                 }); 
             }
         } catch{
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -149,6 +159,7 @@ export default class cartManager {
                 const updatedCartProduct = await cartsModels.findOneAndUpdate(filter, update, { new: true });
                 return updatedCartProduct
             } else {
+                logger.warn(ErrorsMessage.CART_WRONGQUANTITY_ERROR)
                 CustomError.createCustomError({
                     name: ErrorsName.CART_ERROR,
                     cause: ErrorsCause.CART_WRONGQUANTITY_CAUSE,
@@ -156,6 +167,7 @@ export default class cartManager {
                 }); 
             }
         } catch{
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -171,6 +183,7 @@ export default class cartManager {
             await cart.save()
             return cart
         } catch{
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -190,6 +203,7 @@ export default class cartManager {
                 await cart.save()
                 return cart
             } else {
+                logger.warn(ErrorsMessage.CART_EMPTYFIELD_ERROR)
                 CustomError.createCustomError({
                     name: ErrorsName.CART_ERROR,
                     cause: ErrorsCause.CART_EMPTYFIELD_CAUSE,
@@ -197,6 +211,7 @@ export default class cartManager {
                 });
             }
         } catch{
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -238,6 +253,7 @@ export default class cartManager {
             await this.#ticketGenerator(prices, email);}
          return {productsNoStock,productsStocked}
         } catch{
+            logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
@@ -268,7 +284,7 @@ export default class cartManager {
             }
             return code
         } catch{
-            console.log('Cart Manager error:',error)
+            logger.error('Code generation error')
         }
     }    
 }
