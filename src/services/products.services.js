@@ -10,13 +10,13 @@ export async function getProductsByIDService(productID){
     return product
 }
 
-export async function addProductService(product){
-    const newProduct = await addProduct(product)
+export async function addProductService(product,owner){
+    const newProduct = await addProduct(product,owner)
     return newProduct
 }
 
-export async function deleteProductService(productID){
-    const deletedProduct = await deleteProduct(productID)
+export async function deleteProductService(productID,owner){
+    const deletedProduct = await deleteProduct(productID,owner)
     return deletedProduct
 }
 

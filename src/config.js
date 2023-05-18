@@ -7,5 +7,6 @@ export default{
     ADMINMAIL: process.env.ADMINMAIL,
     ADMINPASSWORD: process.env.ADMINPASSWORD,
     PERSISTENCES: [process.env.MONGOPERSISTENCE,process.env.FSPERSISTENCE],
-    ENV: process.env.ENV
+    ENV: process.env.ENV,
+    GCOUNT: [process.env.G_EMAIL,process.env.G_PASSWORD]
 }

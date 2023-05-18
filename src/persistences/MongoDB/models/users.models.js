@@ -31,6 +31,14 @@ const usersSchema = new mongoose.Schema({
     userCart:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"carts"
+    },
+    tokenResetPassword: {
+        type: String,
+        required: false,
+    },
+    tokenExpiration: {
+        type: String,
+        required: false,
     }
 });
 

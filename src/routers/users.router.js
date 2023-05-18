@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { logoutController } from "../controllers/users.controllers.js";
+import { logoutController,passwordForgetController,changePasswordController,changeUserRolController } from "../controllers/users.controllers.js";
 import passport from "passport";
 
 const router = Router()
@@ -9,6 +9,12 @@ router.post('/register',passport.authenticate('register',{
     successRedirect: '/',
     passReqToCallback:true
 }))
+
+router.post('/passwordForget',passwordForgetController)
+
+router.post('/changePassword/:uid/:token',changePasswordController)
+
+router.get('/changeRol',changeUserRolController)
  
 router.post('/login',
 passport.authenticate('login',{

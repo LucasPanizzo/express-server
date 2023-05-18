@@ -31,8 +31,8 @@ export async function getCartByID(cartID) {
     return await persistence.findCartAndPoblate(cartID)
 }
 
-export async function addToCart(cartID, productID) {
-    return await persistence.addToCart(cartID, productID)
+export async function addToCart(cartID, productID,owner) {
+    return await persistence.addToCart(cartID, productID,owner)
 }
 
 export async function deleteProduct(cartID, productID) {

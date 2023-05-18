@@ -38,11 +38,14 @@ export default class ProductManager {
             });
         }
     }
-    async addProduct(obj) {
+    async addProduct(obj,owner) {
         try {
-            const products = await getProductsService()
+            if(owner.rol !== "Admin"){
+                obj.owner = owner.email
+            }
+            const products = await this.getProducts()
             const productsList = products.payload
-            if (productsList.find((el) => el.code === req.body.code)) {
+            if (productsList.find((el) => el.code === obj.code)) {
                 logger.warn(ErrorsMessage.PRODUCT_REPEATEDCODE_ERROR)
                 CustomError.createCustomError({
                     name: ErrorsName.PRODUCT_ERROR,
@@ -63,7 +66,8 @@ export default class ProductManager {
                     });
                 }
             }
-        } catch {
+        } catch(error) {
+            console.log(error);
             logger.error(ErrorsMessage.PRODUCT_ADD_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
@@ -85,11 +89,25 @@ export default class ProductManager {
             });
         }
     }
-    async deleteProduct(id) {
+    async deleteProduct(id,owner) {
         try {
-            const deletedProd = await productsModels.deleteOne({ _id: id })
-            return deletedProd
-        } catch {
+            const productToDelete = await this.getProductsByID(id)
+            if (owner.rol !== "premium" || "admin") {
+                logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
+                CustomError.createCustomError({
+                  name: ErrorsName.SESSION_ERROR,
+                  cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+                  message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+                });
+            } else{
+                if(productToDelete.owner === owner.email || owner.rol === "admin"){
+                    console.log('entra if',productToDelete.owner,owner.email,owner.rol);
+                    const deletedProd = await productsModels.deleteOne({ _id: id })
+                    return deletedProd
+                }
+            }
+        } catch(error) {
+            console.log(error);
             logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,

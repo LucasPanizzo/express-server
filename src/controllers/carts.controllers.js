@@ -66,9 +66,10 @@ export const getUserCart = async (req, res) => {
 
 export const addToCartController = async (req, res) => {
     try {
+        const owner = await currentSessionService(await req.session.userInfo)
         const cartID = req.params.cid
         const productID = req.params.pid
-        await addToCartService(cartID, productID)
+        await addToCartService(cartID, productID,owner)
         res.send('Producto agregado con exito.')
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)

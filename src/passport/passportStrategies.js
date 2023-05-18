@@ -16,6 +16,7 @@ passport.use('register', new LocalStrategy({
     passReqToCallback: true
 }, async (req, email, password, done) => {
     try {
+        console.log('usa PASSPORT');
         const user = await usersModels.findOne({ email })
         if (user) {
             return done(null, false)

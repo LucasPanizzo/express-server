@@ -27,12 +27,12 @@ export async function getProductsByID(productID) {
     return await persistence.getProductsByID(productID)
 }
 
-export async function addProduct(product) {
-    return await persistence.addProduct(product)
+export async function addProduct(product,owner) {
+    return await persistence.addProduct(product,owner)
 }
 
-export async function deleteProduct(productID) {
-    return await persistence.deleteProduct(productID)
+export async function deleteProduct(productID,owner) {
+    return await persistence.deleteProduct(productID,owner)
 }
 
 export async function updateProduct(productID, act) {

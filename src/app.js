@@ -15,11 +15,12 @@ import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import passport from 'passport'
 import './passport/passportStrategies.js'
-import config from './config.js'
 import { addToCartService } from './services/carts.services.js'
 import { getProductsService,addProductService,deleteProductService } from './services/products.services.js'
 import { getMessagesService,newMessageService } from './services/messages.services.js'
-
+import dotenv from 'dotenv';
+dotenv.config();
+import config from './config.js'
 import CustomError from './errors/newError.js'
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "./errors/errorMessages.js";
 import logger from './winston.js'
@@ -90,7 +91,7 @@ app.use(
       resave: false,
       saveUninitialized: true,
       store: new MongoStore({
-        mongoUrl: config.URLMONGO
+        mongoUrl: 'mongodb+srv://lucaspanizzo99:Panizzo99@coderhouse.3xliklk.mongodb.net/ecommerce?retryWrites=true&w=majority'
       }),
     })
   )

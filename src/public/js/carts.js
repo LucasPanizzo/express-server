@@ -1,4 +1,4 @@
-import logger from "../../winston";
+
 async function purchaseFunction() {
   try {
     const userCart = await fetch("/api/carts/getUserCart", { method: "GET" });
@@ -9,7 +9,7 @@ async function purchaseFunction() {
     alert(responseJsonRemaining.message);
     location.reload();
   } catch (error) {
-    logger.error(error);
+    console.log(error);
   }
   }
   
@@ -19,7 +19,7 @@ async function purchaseFunction() {
         calcularTotal(card.dataset.quantity, card.dataset.price);
       });
     } catch (error) {
-      logger.error(error);
+      console.log(error);
     }
   }
 
@@ -47,7 +47,7 @@ async function purchaseFunction() {
       await calcularTotal(newQuantity - quantity, price);
       quantityElement.textContent = String(newQuantity);
     } catch (error) {
-      logger.error(error);
+      console.log(error);
     }
   }
   
@@ -60,7 +60,7 @@ async function purchaseFunction() {
       const total = document.getElementById("total-price");
       total.innerHTML = calcularTotal.total;
     } catch (error) {
-      logger.error(error); 
+      console.log(error); 
     }
   }
   
@@ -72,7 +72,7 @@ async function purchaseFunction() {
       await fetch(`/api/carts/${cartID}/product/${idProduct}`, { method: "DELETE" });
       location.reload()
     } catch (error) {
-      logger.error(error);
+      console.log(error);
     }
   }
   

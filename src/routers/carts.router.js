@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getUserCart,getCartsController,addCartController,getCartByIDController,addToCartController,deleteProductController,emptyCartController,updateProductsInCartController,modifyProductQuantityController,purchaseController } from "../controllers/carts.controllers.js";
-import { verificarUsuario } from "../middlewares/auth.js";
+import { verificarUsuario,verificarUserOPremium } from "../middlewares/auth.js";
 
 const router = Router()
 
@@ -24,7 +24,7 @@ router.get('/:cid',getCartByIDController
 //     }
 // }
 )
-router.post('/:cid/product/:pid',verificarUsuario,addToCartController
+router.post('/:cid/product/:pid',verificarUserOPremium,addToCartController
 // async(req,res)=>{
 //     const cartId = req.params.cid
 //     const productId = req.params.pid

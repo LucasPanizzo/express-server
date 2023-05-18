@@ -2,6 +2,7 @@ import { getProductsService, getProductsByIDService, addProductService, deletePr
 import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 import logger from "../winston.js";
+import { currentSessionService } from "../services/users.services.js";
 
 export const getProductsController = async (req, res) => {
     try {
@@ -35,7 +36,8 @@ export const getProductsByIDController = async (req, res) => {
 
 export const addProductController = async (req, res) => {
     try {
-        await addProductService(req.body)
+        const owner = await currentSessionService(await req.session.userInfo)
+        await addProductService(req.body,owner)
         res.send('Producto creado con exito.')
     } catch {
         logger.error(ErrorsCause.PRODUCT_ADD2_CAUSE)
@@ -49,8 +51,9 @@ export const addProductController = async (req, res) => {
 
 export const deleteProductController = async (req, res) => {
     try {
+        const owner = await currentSessionService(await req.session.userInfo)
         const { idProduct } = req.params
-        await deleteProductService(idProduct)
+        await deleteProductService(idProduct,owner)
         res.send('Producto eliminado con exito')
     } catch {
         logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)

@@ -17,6 +17,47 @@ async function getRole(info) {
   }
 }
 
+export const verificarAdminOPremium = async (req, res, next) => {
+  const sessionRol = await getRole(req.session.userInfo)
+  if (sessionRol === 'admin'||"premium") {
+    next()
+  } else {
+    logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
+    CustomError.createCustomError({
+      name: ErrorsName.SESSION_ERROR,
+      cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+      message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+    });
+  }
+}
+
+export const verificarUserOPremium = async (req, res, next) => {
+  const sessionRol = await getRole(req.session.userInfo)
+  if (sessionRol === 'user'||"premium") {
+    next()
+  } else {
+    logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
+    CustomError.createCustomError({
+      name: ErrorsName.SESSION_ERROR,
+      cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+      message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+    });
+  }
+}
+
+export const verificarPremium = async (req, res, next) => {
+  const sessionRol = await getRole(req.session.userInfo)
+  if (sessionRol === 'premium') {
+    next()
+  } else {
+    logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
+    CustomError.createCustomError({
+      name: ErrorsName.SESSION_ERROR,
+      cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+      message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+    });
+  }
+}
 
 export const verificarAdmin = async (req, res, next) => {
   const sessionRol = await getRole(req.session.userInfo)
