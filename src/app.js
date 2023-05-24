@@ -24,6 +24,9 @@ import config from './config.js'
 import CustomError from './errors/newError.js'
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "./errors/errorMessages.js";
 import logger from './winston.js'
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUi from 'swagger-ui-express'
+import { swaggerSetup } from './swaggerInfo.js'
 // Declarations
 const app = express()
 const port = config.PORT
@@ -106,6 +109,8 @@ app.use('/api/users',users)
 app.use('/jwt',jwt)
 app.use('/api/sessions',sessions)
 app.use('/loggerTest',loggerRouter)
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup))
 
 app.use(passport.initialize())
 app.use(passport.session())
+

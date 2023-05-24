@@ -1,0 +1,132 @@
+paths:
+  /api/products:
+    get:
+      summary: Get All Products 
+      tags:
+        - Products
+      responses:
+        "200":
+          description: All products
+        "500":
+          description: Failed to connect to database
+    post:
+      summary: Create a Product
+      tags:
+        - Products
+      requestBody:
+        description: Objeto JSON que contiene la información del producto
+        required: true
+        content:
+          application/json:
+            schema:    
+              $ref: '#/components/schemas/RawProduct'
+      responses:
+        "200":
+          description: New product
+        "500":
+          description: Failed to connect to database
+
+  /api/products/{idProduct}:
+    get:
+      summary: Get a Product by ID
+      tags:
+        - Products
+      parameters:
+      - name: idProduct
+        in: path
+        description: Product ID
+        schema:
+          $type: String
+        required: true
+      responses:
+        "200":
+          description: Searched product
+        "500":
+          description: Failed to connect to database
+    put:
+      summary: Modify a Product
+      tags:
+        - Products
+      requestBody:
+        description: Modified parameters
+        required: true
+        content:
+          application/json:
+            schema:    
+              type: Object
+      parameters:
+      - name: idProduct
+        in: path
+        description: Product ID
+        schema:
+          $type: String
+        required: true
+      responses:
+        "200":
+          description: Updated product
+        "500":
+          description: Failed to connect to database
+    delete:
+      summary: Delete a product by ID
+      tags:
+        - Products
+      parameters:
+      - name: idProduct
+        in: path
+        description: Product ID
+        schema:
+          $type: String
+        required: true
+      responses:
+        "200":
+          description: Deleted product
+        "500":
+          description: Failed to connect to database
+
+
+
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id: 
+          type: ObjectId
+        title: 
+          type: string
+        description: 
+          type: string
+        price: 
+          type: number
+        thumbnails: 
+          type: string
+        code: 
+          type: string
+        stock: 
+          type: number
+        status: 
+          type: boolean
+        category: 
+          type: string
+        owner: 
+          type: string
+    RawProduct:
+      type: object
+      properties:
+        title: 
+          type: string
+        description: 
+          type: string
+        price: 
+          type: number
+        thumbnails: 
+          type: string
+        code: 
+          type: string
+        stock: 
+          type: number
+        status: 
+          type: boolean
+        category: 
+          type: string

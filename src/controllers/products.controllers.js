@@ -37,8 +37,8 @@ export const getProductsByIDController = async (req, res) => {
 export const addProductController = async (req, res) => {
     try {
         const owner = await currentSessionService(await req.session.userInfo)
-        await addProductService(req.body,owner)
-        res.send('Producto creado con exito.')
+        const newProduct = await addProductService(req.body,owner)
+        res.json({message:'Producto creado con exito.',newProduct})
     } catch {
         logger.error(ErrorsCause.PRODUCT_ADD2_CAUSE)
         CustomError.createCustomError({
@@ -53,8 +53,8 @@ export const deleteProductController = async (req, res) => {
     try {
         const owner = await currentSessionService(await req.session.userInfo)
         const { idProduct } = req.params
-        await deleteProductService(idProduct,owner)
-        res.send('Producto eliminado con exito')
+        const deletedProduct = await deleteProductService(idProduct,owner)
+        res.json({message:'Producto eliminado con exito.',deletedProduct})
     } catch {
         logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
         CustomError.createCustomError({
@@ -72,8 +72,8 @@ export const updateProductController = async (req, res) => {
         const clavesPermitidas = ['title', 'description', 'price', 'code', 'stock', 'status', 'category', 'thumbnails'];
         const actualizacionValida = Object.keys(actualizacion).some((clave) => clavesPermitidas.includes(clave));
         if (actualizacionValida != false) {
-            await updateProductService(idProduct, actualizacion)
-            res.send('Producto modificado con exito')
+            const updatedProduct = await updateProductService(idProduct, actualizacion)
+            res.json({message:'Producto modificado con exito.',updatedProduct})
         } else {
             logger.warn();(ErrorsMessage.PRODUCT_ADD_ERROR)
             CustomError.createCustomError({
@@ -82,7 +82,7 @@ export const updateProductController = async (req, res) => {
                 message: ErrorsMessage.PRODUCT_ADD_ERROR
             });
         }
-    } catch {
+    } catch{
         logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,

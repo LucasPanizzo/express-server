@@ -24,7 +24,7 @@ router.get('/:cid',getCartByIDController
 //     }
 // }
 )
-router.post('/:cid/product/:pid',verificarUserOPremium,addToCartController
+router.post('/:cid/product/:pid',addToCartController
 // async(req,res)=>{
 //     const cartId = req.params.cid
 //     const productId = req.params.pid

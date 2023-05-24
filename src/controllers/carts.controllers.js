@@ -66,7 +66,8 @@ export const getUserCart = async (req, res) => {
 
 export const addToCartController = async (req, res) => {
     try {
-        const owner = await currentSessionService(await req.session.userInfo)
+        //const owner = await currentSessionService(await req.session.userInfo)
+        const owner = {email:"lucas@lucas"}
         const cartID = req.params.cid
         const productID = req.params.pid
         await addToCartService(cartID, productID,owner)

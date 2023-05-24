@@ -92,7 +92,7 @@ export default class ProductManager {
     async deleteProduct(id,owner) {
         try {
             const productToDelete = await this.getProductsByID(id)
-            if (owner.rol !== "premium" || "admin") {
+            if (owner.rol === "user") {
                 logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
                 CustomError.createCustomError({
                   name: ErrorsName.SESSION_ERROR,
@@ -104,6 +104,13 @@ export default class ProductManager {
                     console.log('entra if',productToDelete.owner,owner.email,owner.rol);
                     const deletedProd = await productsModels.deleteOne({ _id: id })
                     return deletedProd
+                } else{
+                    logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
+                    CustomError.createCustomError({
+                      name: ErrorsName.SESSION_ERROR,
+                      cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+                      message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+                    });
                 }
             }
         } catch(error) {

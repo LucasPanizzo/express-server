@@ -1,0 +1,177 @@
+paths:
+  /api/carts:
+    get:
+      summary: Get All Carts
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: All carts
+        "500":
+          description: Failed to connect to database
+    post:
+      summary: Create a Cart
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: New Cart
+        "500":
+          description: Failed to connect to database
+
+  /api/carts/{cid}:
+    get:
+      summary: Get a Cart by ID
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        description: Cart ID
+        schema:
+          $type: String
+        required: true
+      responses:
+        "200":
+          description: Founded Cart
+        "500":
+          description: Failed to connect to database
+    put:
+      summary: Modify a Cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        description: Cart ID
+        schema:
+          $type: String
+        required: true
+      requestBody:
+        description: Objects to ADD
+        required: true
+        content:
+          application/json:
+            schema:    
+              $ref: '#/components/schemas/ProductInCart'
+      responses:
+        "200":
+          description: Cart modified succesfully
+        "500":
+          description: Failed to connect to database
+    delete:
+      summary: Empty the selected the cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        description: Cart ID
+        schema:
+          $type: String
+        required: true
+      responses:
+        "200":
+          description: Cart deleted succesfully
+        "500":
+          description: Failed to connect to database
+
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Add a product to the specified cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        description: Cart ID
+        schema:
+          $type: String
+        required: true
+      - name: pid
+        in: path
+        description: Product ID
+        schema:
+          $type: String
+        required: true
+      responses:
+        "200":
+          description: Product succesfully added to the cart
+        "500":
+          description: Failed to connect to database
+    put:
+      summary: Modify the quantity of a product in a specific cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        description: Cart ID
+        schema:
+          $type: String
+        required: true
+      - name: pid
+        in: path
+        description: Product ID
+        schema:
+          $type: String
+        required: true
+      requestBody:
+        description: New Quantity
+        required: true
+        content:
+          text/plain:
+            schema:    
+              type: number
+      responses:
+        "200":
+          description: Modified quantity
+        "500":
+          description: Failed to connect to database
+    delete:
+      summary: Delete a specific product in the selected Cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        description: Cart ID
+        schema:
+          $type: String
+        required: true
+      - name: pid
+        in: path
+        description: Product ID
+        schema:
+          $type: String
+        required: true
+      responses:
+        "200":
+          description: Product succesfully deleted
+        "500":
+          description: Failed to connect to database
+
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        products: 
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: ObjectId
+              quantity:
+                type: number
+    ProductInCart:
+      type: array
+      items:
+        type: object
+        properties:
+          productId:
+            type: ObjectId
+          quantity:
+            type: number

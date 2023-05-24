@@ -1,4 +1,5 @@
 import passport from "passport";
+import mongoose from "mongoose";
 import config from "../config.js";
 import { usersModels } from '../persistences/MongoDB/models/users.models.js'
 import { Strategy as LocalStrategy } from "passport-local";
@@ -16,7 +17,6 @@ passport.use('register', new LocalStrategy({
     passReqToCallback: true
 }, async (req, email, password, done) => {
     try {
-        console.log('usa PASSPORT');
         const user = await usersModels.findOne({ email })
         if (user) {
             return done(null, false)
@@ -46,16 +46,17 @@ passport.use('login', new LocalStrategy(
     }, async (req, email, password, done) => {
         try {
             if (email === config.ADMINMAIL && password === config.ADMINPASSWORD) {
+                console.log('entra if admin');
                 const userAdmin = {
-                    _id: 'admin_id',
                     first_name: "Admin",
                     last_name: "CoderHouse",
                     email: email,
-                    rol: "Admin",
-                    userCart: '64385f342ae1be1ab440d62b'
+                    rol: "admin",
+                    userCart: mongoose.Types.ObjectId('64385f342ae1be1ab440d62b')
                 }
                 return done(null, userAdmin)
             } else {
+                console.log('entra else user');
                 const user = await usersModels.findOne({ email: email })
                 if (user) {
                     const realPassword = await comparePasswords(password, user.password)
