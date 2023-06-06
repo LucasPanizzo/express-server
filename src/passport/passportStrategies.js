@@ -46,7 +46,6 @@ passport.use('login', new LocalStrategy(
     }, async (req, email, password, done) => {
         try {
             if (email === config.ADMINMAIL && password === config.ADMINPASSWORD) {
-                console.log('entra if admin');
                 const userAdmin = {
                     first_name: "Admin",
                     last_name: "CoderHouse",
@@ -56,7 +55,6 @@ passport.use('login', new LocalStrategy(
                 }
                 return done(null, userAdmin)
             } else {
-                console.log('entra else user');
                 const user = await usersModels.findOne({ email: email })
                 if (user) {
                     const realPassword = await comparePasswords(password, user.password)

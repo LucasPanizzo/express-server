@@ -25,18 +25,8 @@ passport.authenticate('login',{
     res.redirect('/products')
 })
 
-router.get('/logout',logoutController
-// (req,res)=>{
-//     try {
-//         req.session.destroy((error) => {
-//           if (error) console.log(error)
-//           res.redirect('/')
-//         })
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-)
+router.get('/logout',logoutController)
+
 router.get("/githubRegister",passport.authenticate("github",{
     scope:["user:email"]
 }))

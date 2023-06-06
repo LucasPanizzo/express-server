@@ -70,7 +70,6 @@ export const recoveryPasswordViewController = async(req,res)=>{
 export const changeUserRolController = async(req,res)=>{
     try {
         const id = await req.session.userInfo._id
-        console.log(id);
         const newRol = await changeRolService(id)
         res.send(newRol)
     } catch (error){ 
