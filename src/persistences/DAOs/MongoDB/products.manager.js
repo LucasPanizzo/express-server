@@ -66,8 +66,7 @@ export default class ProductManager {
                     });
                 }
             }
-        } catch(error) {
-            console.log(error);
+        } catch {
             logger.error(ErrorsMessage.PRODUCT_ADD_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
@@ -101,7 +100,6 @@ export default class ProductManager {
                 });
             } else{
                 if(productToDelete.owner === owner.email || owner.rol === "admin"){
-                    console.log('entra if',productToDelete.owner,owner.email,owner.rol);
                     const deletedProd = await productsModels.deleteOne({ _id: id })
                     return deletedProd
                 } else{
@@ -113,8 +111,7 @@ export default class ProductManager {
                     });
                 }
             }
-        } catch(error) {
-            console.log(error);
+        } catch{
             logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,

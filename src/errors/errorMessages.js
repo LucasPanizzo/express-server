@@ -26,6 +26,7 @@ export const ErrorsName = {
     USER_WRONGDATA_ERROR: 'No se encontro el elemento con la información especificada.',
     USER_ADD_ERROR: 'Hubo un problema para añadir el user a la base de datos.',
     USER_TOKENEXPIRED_ERROR:'No se ha podido cambiar la contraseña',
+    USER_NEEDDOCUMENTS_ERROR: 'No se ha podido actualizar el rol',
 
     SESSION_INVALID_ERROR: 'Debes iniciar sesión.',
 
@@ -52,6 +53,7 @@ export const ErrorsName = {
     USER_WRONGDATA_CAUSE: 'Información invalida.',
     USER_ADD_CAUSE: 'Debes envíar todos los datos necesarios.',
     USER_TOKENEXPIRED_CAUSE:'El token ha expirado.',
+    USER_NEEDDOCUMENTS_CAUSE: 'Faltan cargar documentos.',
 
     SESSION_INVALID_CAUSE: 'No tienes ninguna sesión activa.',
 

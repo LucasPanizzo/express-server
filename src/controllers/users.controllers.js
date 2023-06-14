@@ -1,9 +1,11 @@
 import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 import logger from "../winston.js";
-import { passwordForgetService,changePasswordService, getUserByIDService ,changeRolService} from "../services/users.services.js";
-export const logoutController = (req,res)=>{
+import { passwordForgetService,changePasswordService, getUserByIDService ,changeRolService,uploadFilesService,updateLastConnectionService } from "../services/users.services.js";
+export const logoutController = async (req,res)=>{
     try {
+        const id = await req.session.userInfo._id
+        await updateLastConnectionService(id)
         req.session.destroy((error) => {
           if (error) console.log(error)
           res.redirect('/')
@@ -17,10 +19,24 @@ export const logoutController = (req,res)=>{
         });
     }
 }
+export const getUserByIdController = async (req,res)=>{
+    try {
+        const id = req.params.uid
+        const user = await getUserByIDService(id)
+        res.send(user)
+    } catch {
+        logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
+        CustomError.createCustomError({
+            name: ErrorsName.USER_ERROR,
+            cause: ErrorsCause.USER_WRONGDATA_CAUSE,
+            message: ErrorsMessage.USER_WRONGDATA_ERROR
+        });  
+    }
+}
 export const passwordForgetController = async (req,res)=>{
     try {
         await passwordForgetService(req.body.email)
-        res.json({ message: `Un email de recuperación ha sido envíado a tu email, revisa la bandeja de entrada.` })
+        res.json({ message: `Un correo de recuperación ha sido envíado a tu email, revisa la bandeja de entrada.` })
     } catch {
         logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
         CustomError.createCustomError({
@@ -69,11 +85,42 @@ export const recoveryPasswordViewController = async(req,res)=>{
 
 export const changeUserRolController = async(req,res)=>{
     try {
-        const id = await req.session.userInfo._id
-        const newRol = await changeRolService(id)
-        res.send(newRol)
-    } catch (error){ 
-        console.log(error);
+        const id = req.params.uid
+        const user = await getUserByIDService(id)
+        const files = user.documents
+        const newRol = await changeRolService(id,files)
+        res.json({message:'Rol actualizado con exito',newRol})
+    } catch { 
+        logger.error(ErrorsMessage.USER_NEEDDOCUMENTS_ERROR)
+        CustomError.createCustomError({
+            name: ErrorsName.USER_ERROR,
+            cause: ErrorsCause.USER_NEEDDOCUMENTS_CAUSE,
+            message: ErrorsMessage.USER_NEEDDOCUMENTS_ERROR
+        });
+    }
+}
+
+
+export const uploadFilesController = async (req, res) => {
+    const userId = req.params.uid;
+    const documents = req.files;
+    let documentsToUpload= [];
+    const processUploadedFiles = (fieldname) => {
+      if (documents?.[fieldname]) {
+        documents[fieldname].forEach((el) => {
+          documentsToUpload.push({ name: el.filename, reference: el.path });
+        });
+      }
+    };
+    processUploadedFiles("profile");
+    processUploadedFiles("product");
+    processUploadedFiles("identificacion");
+    processUploadedFiles("domicilio");
+    processUploadedFiles("cuentaStatus");
+    try {
+      const user = await uploadFilesService(userId, documentsToUpload);
+      res.json({ message: "Sus documentos han sido subidos correctamente",user });
+    } catch {
         logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
         CustomError.createCustomError({
             name: ErrorsName.USER_ERROR,
@@ -81,4 +128,4 @@ export const changeUserRolController = async(req,res)=>{
             message: ErrorsMessage.USER_WRONGDATA_ERROR
         });
     }
-}
+  };

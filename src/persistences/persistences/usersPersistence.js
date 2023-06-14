@@ -19,6 +19,14 @@ export async function getUserByID(userID){
     return await persistence.getUserByID(userID)
 }
 
-export async function changeRol(userID){
-    return await persistence.changeRol(userID)
+export async function changeRol(userID,files){
+    return await persistence.changeRol(userID,files)
+}
+
+export async function uploadFiles(userID,files){
+    return await persistence.uploadFiles(userID,files)
+}
+
+export async function updateLastConnection(userID){
+    return await persistence.updateLastConnection(userID)
 }

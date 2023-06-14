@@ -10,6 +10,7 @@ import UsersDTO from "../persistences/DTOs/users.dto.js";
 import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 import logger from "../winston.js";
+import { updateLastConnectionService } from "../services/users.services.js";
 
 passport.use('register', new LocalStrategy({
     usernameField: 'email',
@@ -59,6 +60,7 @@ passport.use('login', new LocalStrategy(
                 if (user) {
                     const realPassword = await comparePasswords(password, user.password)
                     if (realPassword) {
+                        await updateLastConnectionService(user._id)
                         return done(null, user)
                     } else {
                         return done(null, false)

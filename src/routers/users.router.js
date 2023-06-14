@@ -1,38 +1,49 @@
 import { Router } from "express";
-import { logoutController,passwordForgetController,changePasswordController,changeUserRolController } from "../controllers/users.controllers.js";
+import { logoutController, passwordForgetController, changePasswordController, changeUserRolController, uploadFilesController,getUserByIdController } from "../controllers/users.controllers.js";
 import passport from "passport";
+import { upload } from "../middlewares/multer.js";
 
 const router = Router()
 
-router.post('/register',passport.authenticate('register',{
+router.get('/:uid',getUserByIdController)
+
+router.post('/register', passport.authenticate('register', {
     failureRedirect: '/registerWrong',
     successRedirect: '/',
-    passReqToCallback:true
+    passReqToCallback: true
 }))
 
-router.post('/passwordForget',passwordForgetController)
+router.post('/passwordForget', passwordForgetController)
 
-router.post('/changePassword/:uid/:token',changePasswordController)
+router.post('/changePassword/:uid/:token', changePasswordController)
 
-router.get('/changeRol',changeUserRolController)
- 
+router.get('/changeRol/:uid', changeUserRolController)
+
 router.post('/login',
-passport.authenticate('login',{
-    failureRedirect:"/loginWrong",
-    passReqToCallback:true
-}),async(req,res)=>{
-    req.session.userInfo = req.user
-    res.redirect('/products')
-})
+    passport.authenticate('login', {
+        failureRedirect: "/loginWrong",
+        passReqToCallback: true
+    }), async (req, res) => {
+        req.session.userInfo = req.user
+        res.redirect('/products')
+    })
 
-router.get('/logout',logoutController)
+router.get('/logout', logoutController)
 
-router.get("/githubRegister",passport.authenticate("github",{
-    scope:["user:email"]
+router.get("/githubRegister", passport.authenticate("github", {
+    scope: ["user:email"]
 }))
 
-router.get("/github", passport.authenticate("github"),(req,res)=>{
+router.get("/github", passport.authenticate("github"), (req, res) => {
     req.session.userInfo = req.user
     res.redirect('/products')
 });
+
+router.post("/:uid/documents", upload.fields([
+    { name: "identificacion", maxCount: 1 },
+    { name: "domicilio", maxCount: 1 },
+    { name: "cuentaStatus", maxCount: 1 },
+    { name: "profile", maxCount: 1 },
+    { name: "product", maxCount: 3 }
+]), uploadFilesController);
 export default router

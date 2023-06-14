@@ -39,8 +39,7 @@ export const addProductController = async (req, res) => {
         const owner = await currentSessionService(await req.session.userInfo)
         const newProduct = await addProductService(req.body,owner)
         res.json({message:'Producto creado con exito.',newProduct})
-    } catch (error){
-        console.log(error);
+    } catch {
         logger.error(ErrorsCause.PRODUCT_ADD2_CAUSE)
         CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,

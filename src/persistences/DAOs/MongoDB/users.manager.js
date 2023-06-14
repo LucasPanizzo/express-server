@@ -1,11 +1,12 @@
 import CustomError from "../../../errors/newError.js";
-import { ErrorsCause,ErrorsMessage,ErrorsName } from "../../../errors/errorMessages.js";
+import { ErrorsCause, ErrorsMessage, ErrorsName } from "../../../errors/errorMessages.js";
 import logger from "../../../winston.js";
 import CurrentDTO from "../../DTOs/current.dto.js";
 import nodemailer from 'nodemailer'
 import config from "../../../config.js";
 import { usersModels } from "../../MongoDB/models/users.models.js";
-import { cryptedPassword,comparePasswords } from "../../../utilities.js";
+import { cryptedPassword, comparePasswords } from "../../../utilities.js";
+import { validateDocuments } from "../../../public/js/validateDocuments.js";
 
 // La creación de usuarios nuevos, y el login a la base de datos se hace exclusivamente mediante PASSPORT.
 
@@ -25,7 +26,7 @@ export default class userManager {
     }
     async getUserByID(id) {
         try {
-            const user = await usersModels.findOne({ id:id });
+            const user = await usersModels.findOne({_id:id});
             return user;
         } catch {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
@@ -38,7 +39,7 @@ export default class userManager {
     }
     async getUserByEmail(email) {
         try {
-            const user = await usersModels.findOne({ email:email });
+            const user = await usersModels.findOne({ email: email });
             return user;
         } catch {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
@@ -58,7 +59,7 @@ export default class userManager {
         }
         return code;
     }
-    async passwordForget(email){
+    async passwordForget(email) {
         try {
             const user = await this.getUserByEmail(email)
             const transport = nodemailer.createTransport({
@@ -69,14 +70,14 @@ export default class userManager {
                     pass: config.GCOUNT[1]
                 }
             })
-            if (user){
+            if (user) {
 
                 const code = await this.#generateRandomCode(10); // Genera un código aleatorio de longitud 10
                 const expirationDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hora de expiración
-                  await usersModels.findByIdAndUpdate(
+                await usersModels.findByIdAndUpdate(
                     { _id: user._id },
                     { tokenResetPassword: code, tokenExpiration: expirationDate }
-                  );
+                );
                 let email = await transport.sendMail({
                     from: "<lucas.panizzo99@gmail.com>",
                     to: user.email,
@@ -98,29 +99,29 @@ export default class userManager {
                 return email;
 
             }
-        } catch(error) {
+        } catch (error) {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
             CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR
-            });  
+            });
         }
     }
-    async changePassword (userID,newPassword,token){
+    async changePassword(userID, newPassword, token) {
         try {
             const user = await this.getUserByID(userID)
-            if(user.tokenResetPassword === token){
+            if (user.tokenResetPassword === token) {
                 const repeatedPassword = await comparePasswords(newPassword, user.password)
                 if (repeatedPassword) {
-                    return('La contraseña nueva no puede ser igual a la anterior')
+                    return ('La contraseña nueva no puede ser igual a la anterior')
                 } else {
                     const newPasswordCrypted = await cryptedPassword(newPassword)
-                    await usersModels.findByIdAndUpdate({_id:userID},{password:newPasswordCrypted})
-                    return('Contraseña actualizada con exito.')
+                    await usersModels.findByIdAndUpdate({ _id: userID }, { password: newPasswordCrypted })
+                    return ('Contraseña actualizada con exito.')
                 }
             }
-            else{
+            else {
                 return ('Error al cambiar la contraseña, el token ha expirado.')
             }
         } catch {
@@ -129,25 +130,65 @@ export default class userManager {
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR
-            });  
+            });
         }
     }
-    async changeRol(ID) {
+    async changeRol(ID, files) {
         try {
             const changeRol = await this.getUserByID(ID)
-            if(changeRol.rol === "User") {
+            const validation = validateDocuments(files)
+            if (changeRol.rol === "User" && validation === false || true) {
+                if (validation) {
+                    const newRole = usersModels.updateOne(
+                        { _id: ID },
+                        { rol: "Premium" }
+                    )
+                    return newRole;
+                } else {
+                    logger.error(ErrorsMessage.USER_NEEDDOCUMENTS_ERROR)
+                    CustomError.createCustomError({
+                        name: ErrorsName.USER_ERROR,
+                        cause: ErrorsCause.USER_NEEDDOCUMENTS_CAUSE,
+                        message: ErrorsMessage.USER_NEEDDOCUMENTS_ERROR
+                    });
+                }
+            } else if (changeRol.rol === "Premium") {
                 const newRole = usersModels.updateOne(
-                    {_id: ID},
-                    {rol: "Premium"}
-                )
-                return newRole;
-            } else {
-                const newRole = usersModels.updateOne(
-                    {_id: ID},
-                    {rol: "User"}
+                    { _id: ID },
+                    { rol: "User" }
                 )
                 return newRole;
             }
+        } catch {
+            logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
+            CustomError.createCustomError({
+                name: ErrorsName.USER_ERROR,
+                cause: ErrorsCause.USER_WRONGDATA_CAUSE,
+                message: ErrorsMessage.USER_WRONGDATA_ERROR
+            });
+        }
+    }
+    async uploadFiles(uid, files) {
+        try {
+            const user = await this.getUserByID(uid);
+            const existingFiles = user.documents || [];
+            const updatedFiles = existingFiles.concat(files);
+            const uploadedFiles = await usersModels.findByIdAndUpdate(uid, { documents: updatedFiles }, { new: true });
+            return uploadedFiles;
+        } catch {
+            logger.error(ErrorsMessage.USER_WRONGDATA_ERROR);
+            CustomError.createCustomError({
+                name: ErrorsName.USER_ERROR,
+                cause: ErrorsCause.USER_WRONGDATA_CAUSE,
+                message: ErrorsMessage.USER_WRONGDATA_ERROR,
+            });
+        }
+    }
+    async updateLastConnection(uid) {
+        try {
+            const lastDate = new Date(Date.now());
+            const userUpdated = await usersModels.findByIdAndUpdate(uid, { lastConnection: lastDate }, { new: true })
+            return userUpdated
         } catch {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
             CustomError.createCustomError({

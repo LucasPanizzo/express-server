@@ -39,7 +39,22 @@ const usersSchema = new mongoose.Schema({
     tokenExpiration: {
         type: String,
         required: false,
-    }
+    },
+    documents: {
+        type: [
+          {
+            name: { type: String},
+            reference: {type: String}
+          }
+        ],
+        required: false
+      },
+      lastConnection: {
+        type: String,
+        required: false,
+        default: "Never"
+      }
+    
 });
 
 usersSchema.pre("findOne",function(next){

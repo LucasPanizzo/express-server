@@ -89,7 +89,6 @@ export default class cartManager {
             const isARealProduct = await getProductsByIDService(idProduct)
             if (isARealProduct) {
                 if(isARealProduct.owner !== owner.email){
-                    console.log(isARealProduct.owner,owner.email);
                     if (product) {
                         const newQuantity = product.quantity + 1
                         const actCart = await this.modifyProductQuantity(idCart, idProduct, newQuantity)
