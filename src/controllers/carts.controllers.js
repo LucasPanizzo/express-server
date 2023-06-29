@@ -10,7 +10,7 @@ export const addCartController = async (req, res) => {
         res.send('carrito creado con exito')
     } catch {
         logger.error(ErrorsMessage.CART_ADDCARTFAIL_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_ADDCARTFAIL_CAUSE,
             message: ErrorsMessage.CART_ADDCARTFAIL_ERROR
@@ -24,7 +24,7 @@ export const getCartsController = async (req, res) => {
         res.json({ message: 'Lista de carritos:', carts })
     } catch {
         logger.error(ErrorsMessage.CART_EMPTYLIST_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_EMPTYLIST_CAUSE,
             message: ErrorsMessage.CART_EMPTYLIST_ERROR
@@ -40,7 +40,7 @@ export const getCartByIDController = async (req, res) => {
         res.json({ message: 'Carrito encontrado', cartProducts })
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
             message: ErrorsMessage.CART_WRONGID_ERROR
@@ -56,7 +56,7 @@ export const getUserCart = async (req, res) => {
         res.json({ message: 'Carrito encontrado', cartProducts })
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
             message: ErrorsMessage.CART_WRONGID_ERROR
@@ -73,7 +73,7 @@ export const addToCartController = async (req, res) => {
         res.send('Producto agregado con exito.')
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
             message: ErrorsMessage.CART_WRONGID_ERROR
@@ -89,7 +89,7 @@ export const deleteProductController = async (req, res) => {
         res.send('Producto eliminado con exito.')
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
             message: ErrorsMessage.CART_WRONGID_ERROR
@@ -104,7 +104,7 @@ export const emptyCartController = async (req, res) => {
         res.send('Carrito vaciado con exito.')
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
             message: ErrorsMessage.CART_WRONGID_ERROR
@@ -120,7 +120,7 @@ export const updateProductsInCartController = async (req, res) => {
         res.send('Carrito modificado con exito.')
     } catch {
         logger.error(ErrorsMessage.CART_EMPTYFIELD_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_EMPTYFIELD_CAUSE,
             message: ErrorsMessage.CART_EMPTYFIELD_ERROR
@@ -137,7 +137,7 @@ export const modifyProductQuantityController = async (req, res) => {
         res.send('Cantidad modificada con exito.')
     } catch {
         logger.error(ErrorsMessage.CART_WRONGQUANTITY_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGQUANTITY_CAUSE,
             message: ErrorsMessage.CART_WRONGQUANTITY_ERROR
@@ -159,7 +159,7 @@ export const purchaseController = async (req, res) => {
         }
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
             message: ErrorsMessage.CART_WRONGID_ERROR
@@ -176,7 +176,7 @@ export const writeCartsController = async (req, res) => {
         res.render('cart', { "products": products })
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.CART_ERROR,
             cause: ErrorsCause.CART_WRONGID_CAUSE,
             message: ErrorsMessage.CART_WRONGID_ERROR

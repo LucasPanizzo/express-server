@@ -52,7 +52,7 @@ socketServer.on('connection',async(socket)=>{
         const productsList = products.payload
         if(await productsList.find((el) => el.code === obj.code)){
             logger.warn(ErrorsMessage.PRODUCT_REPEATEDCODE_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_REPEATEDCODE_CAUSE,
                 message: ErrorsMessage.PRODUCT_REPEATEDCODE_ERROR

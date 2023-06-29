@@ -19,6 +19,10 @@ export async function getUserByID(userID){
     return await persistence.getUserByID(userID)
 }
 
+export async function getAllUsers(){
+    return await persistence.getAllUsers()
+}
+
 export async function changeRol(userID,files){
     return await persistence.changeRol(userID,files)
 }
@@ -29,4 +33,8 @@ export async function uploadFiles(userID,files){
 
 export async function updateLastConnection(userID){
     return await persistence.updateLastConnection(userID)
+}
+
+export async function deleteInactiveUsers(){
+    return await persistence.deleteInactiveUsers()
 }

@@ -15,7 +15,7 @@ export const chatControllers = async(req,res)=>{
         res.render('chat',{"user":userInfo,"condition":condition})
     } catch{
         logger.error(ErrorsMessage.SESSION_INVALID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.SESSION_ERROR,
             cause: ErrorsCause.SESSION_INVALID_CAUSE,
             message: ErrorsMessage.SESSION_INVALID_ERROR

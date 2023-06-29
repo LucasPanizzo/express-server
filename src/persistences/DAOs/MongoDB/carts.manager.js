@@ -14,7 +14,7 @@ export default class cartManager {
             return cartsList
         } catch{
             logger.error(ErrorsMessage.CART_EMPTYLIST_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_EMPTYLIST_CAUSE,
                 message: ErrorsMessage.CART_EMPTYLIST_ERROR
@@ -28,7 +28,7 @@ export default class cartManager {
             return cart
         } catch{
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
                 message: ErrorsMessage.CART_WRONGID_ERROR
@@ -42,7 +42,7 @@ export default class cartManager {
             return cart 
         } catch{
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
                 message: ErrorsMessage.CART_WRONGID_ERROR
@@ -56,7 +56,7 @@ export default class cartManager {
             return newCart
         } catch{
             logger.error(ErrorsMessage.CART_ADD_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_ADD_CAUSE,
                 message: ErrorsMessage.CART_ADD_ERROR
@@ -73,7 +73,7 @@ export default class cartManager {
             return productExists
         } catch{
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
                 message: ErrorsMessage.CART_WRONGID_ERROR
@@ -104,7 +104,7 @@ export default class cartManager {
                     }
                 } else{
                     logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
-                    CustomError.createCustomError({
+                    throw CustomError.createCustomError({
                       name: ErrorsName.SESSION_ERROR,
                       cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
                       message: ErrorsMessage.AUTH_INVALIDROL_ERROR
@@ -112,7 +112,7 @@ export default class cartManager {
                 }
             } else{
                 logger.warn(ErrorsMessage.CART_WRONGID_ERROR)
-                CustomError.createCustomError({
+                throw CustomError.createCustomError({
                     name: ErrorsName.CART_ERROR,
                     cause: ErrorsCause.CART_WRONGID_CAUSE,
                     message: ErrorsMessage.CART_WRONGID_ERROR
@@ -120,7 +120,7 @@ export default class cartManager {
             }
         } catch{
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
                 message: ErrorsMessage.CART_WRONGID_ERROR
@@ -144,7 +144,7 @@ export default class cartManager {
                 }
             } else{
                 logger.warn(ErrorsMessage.CART_WRONGID_ERROR)
-                CustomError.createCustomError({
+                throw CustomError.createCustomError({
                     name: ErrorsName.CART_ERROR,
                     cause: ErrorsCause.CART_WRONGID_CAUSE,
                     message: ErrorsMessage.CART_WRONGID_ERROR
@@ -152,7 +152,7 @@ export default class cartManager {
             }
         } catch{
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
                 message: ErrorsMessage.CART_WRONGID_ERROR
@@ -169,7 +169,7 @@ export default class cartManager {
                 return updatedCartProduct
             } else {
                 logger.warn(ErrorsMessage.CART_WRONGQUANTITY_ERROR)
-                CustomError.createCustomError({
+                throw CustomError.createCustomError({
                     name: ErrorsName.CART_ERROR,
                     cause: ErrorsCause.CART_WRONGQUANTITY_CAUSE,
                     message: ErrorsMessage.CART_WRONGQUANTITY_ERROR
@@ -177,7 +177,7 @@ export default class cartManager {
             }
         } catch{
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
                 message: ErrorsMessage.CART_WRONGID_ERROR
@@ -193,7 +193,7 @@ export default class cartManager {
             return cart
         } catch{
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
                 message: ErrorsMessage.CART_WRONGID_ERROR
@@ -213,7 +213,7 @@ export default class cartManager {
                 return cart
             } else {
                 logger.warn(ErrorsMessage.CART_EMPTYFIELD_ERROR)
-                CustomError.createCustomError({
+                throw CustomError.createCustomError({
                     name: ErrorsName.CART_ERROR,
                     cause: ErrorsCause.CART_EMPTYFIELD_CAUSE,
                     message: ErrorsMessage.CART_EMPTYFIELD_ERROR
@@ -221,7 +221,7 @@ export default class cartManager {
             }
         } catch{
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
                 message: ErrorsMessage.CART_WRONGID_ERROR
@@ -263,7 +263,7 @@ export default class cartManager {
          return {productsNoStock,productsStocked}
         } catch{
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
                 cause: ErrorsCause.CART_WRONGID_CAUSE,
                 message: ErrorsMessage.CART_WRONGID_ERROR

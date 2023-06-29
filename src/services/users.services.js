@@ -1,4 +1,4 @@
-import { currentSession,passwordForget,changePassword,getUserByID,changeRol,uploadFiles,updateLastConnection } from "../persistences/persistences/usersPersistence.js";
+import { currentSession,passwordForget,changePassword,getUserByID,changeRol,uploadFiles,updateLastConnection,deleteInactiveUsers,getAllUsers } from "../persistences/persistences/usersPersistence.js";
 
 export async function currentSessionService(info){
     const session = currentSession(info)
@@ -20,6 +20,11 @@ export async function getUserByIDService(userID){
     return user
 }
 
+export async function getAllUsersService(){
+    const users = getAllUsers()
+    return users
+}
+
 export async function changeRolService(userID,files){
     const newRol = changeRol(userID,files)
     return newRol
@@ -33,4 +38,9 @@ export async function uploadFilesService(userID,files){
 export async function updateLastConnectionService(userID){
     const lastConnection = updateLastConnection(userID)
     return lastConnection
+}
+
+export async function deleteInactiveUsersService(){
+    const inactiveUsers = deleteInactiveUsers()
+    return inactiveUsers
 }

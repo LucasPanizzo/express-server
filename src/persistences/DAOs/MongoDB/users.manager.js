@@ -7,6 +7,7 @@ import config from "../../../config.js";
 import { usersModels } from "../../MongoDB/models/users.models.js";
 import { cryptedPassword, comparePasswords } from "../../../utilities.js";
 import { validateDocuments } from "../../../public/js/validateDocuments.js";
+import UsersSecureDTO from "../../DTOs/usersSecureData.dto.js";
 
 // La creación de usuarios nuevos, y el login a la base de datos se hace exclusivamente mediante PASSPORT.
 
@@ -17,7 +18,7 @@ export default class userManager {
             return current
         } catch {
             logger.error(ErrorsMessage.SESSION_INVALID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.SESSION_ERROR,
                 cause: ErrorsCause.SESSION_INVALID_CAUSE,
                 message: ErrorsMessage.SESSION_INVALID_ERROR
@@ -26,11 +27,11 @@ export default class userManager {
     }
     async getUserByID(id) {
         try {
-            const user = await usersModels.findOne({_id:id});
+            const user = await usersModels.findOne({ _id: id });
             return user;
         } catch {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR
@@ -43,13 +44,29 @@ export default class userManager {
             return user;
         } catch {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR
             });
         }
     }
+    async getAllUsers() {
+        try {
+          const users = await usersModels.find();
+          const userList = users.map(el => new UsersSecureDTO(el));
+          return userList;
+        } catch {
+          logger.error(ErrorsMessage.USER_WRONGDATA_ERROR);
+          throw CustomError.createCustomError({
+            name: ErrorsName.USER_ERROR,
+            cause: ErrorsCause.USER_WRONGDATA_CAUSE,
+            message: ErrorsMessage.USER_WRONGDATA_ERROR
+          });
+        }
+      }
+      
+      
     async #generateRandomCode(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let code = '';
@@ -101,7 +118,7 @@ export default class userManager {
             }
         } catch (error) {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR
@@ -126,7 +143,7 @@ export default class userManager {
             }
         } catch {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR
@@ -135,39 +152,38 @@ export default class userManager {
     }
     async changeRol(ID, files) {
         try {
-            const changeRol = await this.getUserByID(ID)
-            const validation = validateDocuments(files)
-            if (changeRol.rol === "User" && validation === false || true) {
-                if (validation) {
-                    const newRole = usersModels.updateOne(
-                        { _id: ID },
-                        { rol: "Premium" }
-                    )
-                    return newRole;
-                } else {
-                    logger.error(ErrorsMessage.USER_NEEDDOCUMENTS_ERROR)
-                    CustomError.createCustomError({
-                        name: ErrorsName.USER_ERROR,
-                        cause: ErrorsCause.USER_NEEDDOCUMENTS_CAUSE,
-                        message: ErrorsMessage.USER_NEEDDOCUMENTS_ERROR
-                    });
-                }
+            const changeRol = await this.getUserByID(ID);
+            const validation = validateDocuments(files);
+            if (changeRol.rol === "User" && validation) {
+                const newRole = await usersModels.updateOne(
+                    { _id: ID },
+                    { rol: "Premium" }
+                );
+                return newRole;
             } else if (changeRol.rol === "Premium") {
-                const newRole = usersModels.updateOne(
+                const newRole = await usersModels.updateOne(
                     { _id: ID },
                     { rol: "User" }
-                )
+                );
                 return newRole;
+            } else {
+                logger.error(ErrorsMessage.USER_NEEDDOCUMENTS_ERROR);
+                throw CustomError.createCustomError({
+                    name: ErrorsName.USER_ERROR,
+                    cause: ErrorsCause.USER_NEEDDOCUMENTS_CAUSE,
+                    message: ErrorsMessage.USER_NEEDDOCUMENTS_ERROR
+                });
             }
         } catch {
-            logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
-            CustomError.createCustomError({
+            logger.error(ErrorsMessage.USER_WRONGDATA_ERROR);
+            throw CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR
             });
         }
     }
+
     async uploadFiles(uid, files) {
         try {
             const user = await this.getUserByID(uid);
@@ -177,7 +193,7 @@ export default class userManager {
             return uploadedFiles;
         } catch {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR);
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR,
@@ -186,16 +202,54 @@ export default class userManager {
     }
     async updateLastConnection(uid) {
         try {
-            const lastDate = new Date(Date.now());
+            const lastDate = new Date(Date.now()).toISOString();
             const userUpdated = await usersModels.findByIdAndUpdate(uid, { lastConnection: lastDate }, { new: true })
             return userUpdated
         } catch {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR
             });
         }
     }
+    async deleteInactiveUsers() {
+        try {
+            const inactiveThreshold = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+            const inactiveUsers = await usersModels.find({ lastConnection: { $lt: inactiveThreshold } });
+            await usersModels.deleteMany({ lastConnection: { $lt: inactiveThreshold } });
+            const transport = nodemailer.createTransport({
+                service: 'gmail',
+                port: 587,
+                auth: {
+                    user: config.GCOUNT[0],
+                    pass: config.GCOUNT[1]
+                }
+            });
+            const deleteEmails = inactiveUsers.map(async (user) => {
+                await transport.sendMail({
+                    from: "<lucas.panizzo99@gmail.com>",
+                    to: user.email,
+                    subject: 'Eliminación de cuenta por inactividad',
+                    html: `
+                <div>
+                  <p>Tu cuenta ha sido eliminada debido a la inactividad.</p>
+                  <p>Si deseas volver a utilizar nuestros servicios, por favor regístrate nuevamente.</p>
+                </div>
+              `
+                });
+            });
+            await Promise.all(deleteEmails);
+            return inactiveUsers;
+        } catch {
+            logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
+            throw CustomError.createCustomError({
+                name: ErrorsName.USER_ERROR,
+                cause: ErrorsCause.USER_WRONGDATA_CAUSE,
+                message: ErrorsMessage.USER_WRONGDATA_ERROR
+            });
+        }
+    }
+    
 }

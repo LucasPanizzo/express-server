@@ -10,7 +10,7 @@ export default class messageManager{
             return messages
         } catch {
             logger.error(ErrorsMessage.CHAT_GET_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CHAT_ERROR,
                 cause: ErrorsCause.CHAT_GET_CAUSE,
                 message: ErrorsMessage.CHAT_GET_ERROR
@@ -23,7 +23,7 @@ export default class messageManager{
            return newMessage
         } catch {
             logger.error(ErrorsMessage.CHAT_CREATE_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.CHAT_ERROR,
                 cause: ErrorsCause.CHAT_CREATE_CAUSE,
                 message: ErrorsMessage.CHAT_CREATE_ERROR

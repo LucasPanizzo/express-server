@@ -6,11 +6,11 @@ const router = Router()
 
 router.get('/', getProductsController)
 
-router.get('/:idProduct',getProductsByIDController)
-
 router.post('/',
 // verificarAdminOPremium,
 addProductController)
+
+router.get('/:idProduct',getProductsByIDController)
 
 router.delete('/:idProduct',
 //verificarAdminOPremium,

@@ -31,23 +31,23 @@ export default class ProductManager {
             return productsInfo
         } catch {
             logger.error(ErrorsMessage.PRODUCT_EMPTYLIST_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_EMPTYLIST_CAUSE,
                 message: ErrorsMessage.PRODUCT_EMPTYLIST_ERROR
             });
         }
     }
-    async addProduct(obj,owner) {
+    async addProduct(obj, owner) {
         try {
-            if(owner.rol !== "Admin"){
+            if (owner.rol !== "Admin") {
                 obj.owner = owner.email
             }
             const products = await this.getProducts()
             const productsList = products.payload
             if (productsList.find((el) => el.code === obj.code)) {
                 logger.warn(ErrorsMessage.PRODUCT_REPEATEDCODE_ERROR)
-                CustomError.createCustomError({
+                throw CustomError.createCustomError({
                     name: ErrorsName.PRODUCT_ERROR,
                     cause: ErrorsCause.PRODUCT_REPEATEDCODE_CAUSE,
                     message: ErrorsMessage.PRODUCT_REPEATEDCODE_ERROR
@@ -59,7 +59,7 @@ export default class ProductManager {
                     return productSaved
                 } else {
                     logger.warn(ErrorsMessage.PRODUCT_ADD_ERROR)
-                    CustomError.createCustomError({
+                    throw CustomError.createCustomError({
                         name: ErrorsName.PRODUCT_ERROR,
                         cause: ErrorsCause.PRODUCT_ADD_CAUSE,
                         message: ErrorsMessage.PRODUCT_ADD_ERROR
@@ -68,7 +68,7 @@ export default class ProductManager {
             }
         } catch {
             logger.error(ErrorsMessage.PRODUCT_ADD_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_ADD_CAUSE,
                 message: ErrorsMessage.PRODUCT_ADD_ERROR
@@ -81,45 +81,120 @@ export default class ProductManager {
             return product
         } catch {
             logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
                 message: ErrorsMessage.PRODUCT_WRONGID_ERROR
             });
         }
     }
-    async deleteProduct(id,owner) {
+    async deleteProduct(id, owner) {
         try {
-            const productToDelete = await this.getProductsByID(id)
+            const productToDelete = await this.getProductsByID(id);
             if (owner.rol === "user") {
                 logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
-                CustomError.createCustomError({
-                  name: ErrorsName.SESSION_ERROR,
-                  cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
-                  message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+                throw CustomError.createCustomError({
+                    name: ErrorsName.SESSION_ERROR,
+                    cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+                    message: ErrorsMessage.AUTH_INVALIDROL_ERROR
                 });
-            } else{
-                if(productToDelete.owner === owner.email || owner.rol === "admin"){
-                    const deletedProd = await productsModels.deleteOne({ _id: id })
-                    return deletedProd
-                } else{
-                    logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
-                    CustomError.createCustomError({
-                      name: ErrorsName.SESSION_ERROR,
-                      cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
-                      message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+            }
+            if (owner.rol === "admin" || (owner.rol === "premium" && productToDelete.owner === owner.email)) {
+                if (owner.rol !== "admin") {
+                    const transport = nodemailer.createTransport({
+                        service: 'gmail',
+                        port: 587,
+                        auth: {
+                            user: config.GCOUNT[0],
+                            pass: config.GCOUNT[1]
+                        }
+                    });
+
+                    await transport.sendMail({
+                        from: "<lucas.panizzo99@gmail.com>",
+                        to: owner.email,
+                        subject: 'Producto Borrado',
+                        html: `
+                  <div>
+                    <p>Se ha borrado tu producto, "${productToDelete.title}". Contacta con Soporte si crees que es un error.</p>
+                  </div>
+                `
                     });
                 }
+
+                const deletedProd = await productsModels.deleteOne({ _id: id });
+                return deletedProd;
+            } else {
+                logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
+                throw CustomError.createCustomError({
+                    name: ErrorsName.SESSION_ERROR,
+                    cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+                    message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+                });
             }
-        } catch{
-            logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
-            CustomError.createCustomError({
+        } catch (error) {
+            logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR);
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
                 message: ErrorsMessage.PRODUCT_WRONGID_ERROR
             });
         }
     }
+
+
+    // async deleteProduct(id, owner) {
+    //     try {
+    //         const productToDelete = await this.getProductsByID(id)
+    //         if (owner.rol === "user") {
+    //             logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
+    //    throw CustomError.createCustomError({
+    //                 name: ErrorsName.SESSION_ERROR,
+    //                 cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+    //                 message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+    //             });
+    //         } else {
+    //             if (productToDelete.owner === owner.email || owner.rol === "admin") {
+    //                 if (productToDelete.owner != "Admin") {
+    //                     const transport = nodemailer.createTransport({
+    //                         service: 'gmail',
+    //                         port: 587,
+    //                         auth: {
+    //                             user: config.GCOUNT[0],
+    //                             pass: config.GCOUNT[1]
+    //                         }
+    //                     })
+    //                     await transport.sendMail({
+    //                         from: "<lucas.panizzo99@gmail.com>",
+    //                         to: owner.email,
+    //                         subject: 'Producto Borrado',
+    //                         html: `
+    //                             <div>
+    //                                 <p>Se ha borrado tu producto, "${productToDelete.title}". Contacta con Soporte si crees que es un error.</p>
+    //                             </div>
+    //                         `
+    //                     })
+    //                 }
+    //                 const deletedProd = await productsModels.deleteOne({ _id: id })
+    //                 return deletedProd
+    //             } else {
+    //                 logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
+    //        throw CustomError.createCustomError({
+    //                     name: ErrorsName.SESSION_ERROR,
+    //                     cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
+    //                     message: ErrorsMessage.AUTH_INVALIDROL_ERROR
+    //                 });
+    //             }
+    //         }
+    //     } catch {
+    //         logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
+    //throw CustomError.createCustomError({
+    //             name: ErrorsName.PRODUCT_ERROR,
+    //             cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
+    //             message: ErrorsMessage.PRODUCT_WRONGID_ERROR
+    //         });
+    //     }
+    // }
     async updateProduct(id, actualizacion) {
         try {
             const clavesPermitidas = ['title', 'description', 'price', 'code', 'stock', 'status', 'category', 'thumbnails'];
@@ -129,7 +204,7 @@ export default class ProductManager {
                 return updateProduct
             } else {
                 logger.warn(ErrorsMessage.PRODUCT_ADD_ERROR)
-                CustomError.createCustomError({
+                throw CustomError.createCustomError({
                     name: ErrorsName.PRODUCT_ERROR,
                     cause: ErrorsCause.PRODUCT_ADD_CAUSE,
                     message: ErrorsMessage.PRODUCT_ADD_ERROR
@@ -137,7 +212,7 @@ export default class ProductManager {
             }
         } catch {
             logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
                 message: ErrorsMessage.PRODUCT_WRONGID_ERROR
@@ -151,7 +226,7 @@ export default class ProductManager {
             return mockingProducts
         } catch {
             logger.error(ErrorsMessage.PRODUCT_ADD_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_ADD_CAUSE,
                 message: ErrorsMessage.PRODUCT_ADD_ERROR
@@ -164,7 +239,7 @@ export default class ProductManager {
             return productList
         } catch {
             logger.error(ErrorsMessage.PRODUCT_EMPTYLIST_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_EMPTYLIST_CAUSE,
                 message: ErrorsMessage.PRODUCT_EMPTYLIST_ERROR
@@ -177,7 +252,7 @@ export default class ProductManager {
             return productList
         } catch {
             logger.error(ErrorsMessage.PRODUCT_EMPTYLIST_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_EMPTYLIST_CAUSE,
                 message: ErrorsMessage.PRODUCT_EMPTYLIST_ERROR

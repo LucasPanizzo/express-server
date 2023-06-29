@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { logoutController, passwordForgetController, changePasswordController, changeUserRolController, uploadFilesController,getUserByIdController } from "../controllers/users.controllers.js";
+import { logoutController, passwordForgetController, changePasswordController, changeUserRolController, uploadFilesController,getUserByIdController,deleteInactiveUsersController,getAllUsersController } from "../controllers/users.controllers.js";
 import passport from "passport";
 import { upload } from "../middlewares/multer.js";
 
 const router = Router()
 
-router.get('/:uid',getUserByIdController)
+router.get('/',getAllUsersController)
+
+router.delete('/',deleteInactiveUsersController)
 
 router.post('/register', passport.authenticate('register', {
     failureRedirect: '/registerWrong',
@@ -46,4 +48,7 @@ router.post("/:uid/documents", upload.fields([
     { name: "profile", maxCount: 1 },
     { name: "product", maxCount: 3 }
 ]), uploadFilesController);
+
+router.get('/:uid',getUserByIdController)
+
 export default router

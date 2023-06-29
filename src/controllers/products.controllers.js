@@ -11,7 +11,7 @@ export const getProductsController = async (req, res) => {
         res.send(products)
     } catch {
         logger.error(ErrorsMessage.PRODUCT_EMPTYLIST_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_EMPTYLIST_CAUSE,
             message: ErrorsMessage.PRODUCT_EMPTYLIST_ERROR
@@ -26,7 +26,7 @@ export const getProductsByIDController = async (req, res) => {
         res.json({ message: 'Producto encontrado', searchedProduct })
     } catch {
         logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
             message: ErrorsMessage.PRODUCT_WRONGID_ERROR
@@ -41,7 +41,7 @@ export const addProductController = async (req, res) => {
         res.json({message:'Producto creado con exito.',newProduct})
     } catch {
         logger.error(ErrorsCause.PRODUCT_ADD2_CAUSE)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_ADD_CAUSE,
             message: ErrorsCause.PRODUCT_ADD2_CAUSE
@@ -57,7 +57,7 @@ export const deleteProductController = async (req, res) => {
         res.json({message:'Producto eliminado con exito.',deletedProduct})
     } catch {
         logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
             message: ErrorsMessage.PRODUCT_WRONGID_ERROR
@@ -76,7 +76,7 @@ export const updateProductController = async (req, res) => {
             res.json({message:'Producto modificado con exito.',updatedProduct})
         } else {
             logger.warn();(ErrorsMessage.PRODUCT_ADD_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
                 cause: ErrorsCause.PRODUCT_ADD_CAUSE,
                 message: ErrorsMessage.PRODUCT_ADD_ERROR
@@ -84,7 +84,7 @@ export const updateProductController = async (req, res) => {
         }
     } catch{
         logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_WRONGID_CAUSE,
             message: ErrorsMessage.PRODUCT_WRONGID_ERROR
@@ -99,7 +99,7 @@ export const writeProductsController = async (req, res) => {
         const productsList = await products.payload.map(product => Object.assign({}, product._doc))
         res.render('index', { "session": req.session.userInfo, "products": productsList })
     } catch {
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_EMPTYLIST_CAUSE,
             message: ErrorsMessage.PRODUCT_EMPTYLIST_ERROR
@@ -117,7 +117,7 @@ export const mockingProductsController = async (req, res) => {
             res.send(mockingList)
         }
     } catch {
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_ADD_CAUSE,
             message: ErrorsMessage.PRODUCT_ADD_ERROR

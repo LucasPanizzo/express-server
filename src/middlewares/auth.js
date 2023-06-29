@@ -9,7 +9,7 @@ async function getRole(info) {
     return sessionInfo.rol
   } catch {
     logger.error(ErrorsMessage.SESSION_INVALID_ERRO)
-    CustomError.createCustomError({
+    throw CustomError.createCustomError({
       name: ErrorsName.SESSION_ERROR,
       cause: ErrorsCause.SESSION_INVALID_CAUSE,
       message: ErrorsMessage.SESSION_INVALID_ERROR
@@ -23,7 +23,7 @@ export const verificarAdminOPremium = async (req, res, next) => {
     next()
   } else {
     logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
-    CustomError.createCustomError({
+    throw CustomError.createCustomError({
       name: ErrorsName.SESSION_ERROR,
       cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
       message: ErrorsMessage.AUTH_INVALIDROL_ERROR
@@ -37,7 +37,7 @@ export const verificarUserOPremium = async (req, res, next) => {
     next()
   } else {
     logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
-    CustomError.createCustomError({
+    throw CustomError.createCustomError({
       name: ErrorsName.SESSION_ERROR,
       cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
       message: ErrorsMessage.AUTH_INVALIDROL_ERROR
@@ -51,7 +51,7 @@ export const verificarPremium = async (req, res, next) => {
     next()
   } else {
     logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
-    CustomError.createCustomError({
+    throw CustomError.createCustomError({
       name: ErrorsName.SESSION_ERROR,
       cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
       message: ErrorsMessage.AUTH_INVALIDROL_ERROR
@@ -65,7 +65,7 @@ export const verificarAdmin = async (req, res, next) => {
     next()
   } else {
     logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
-    CustomError.createCustomError({
+    throw CustomError.createCustomError({
       name: ErrorsName.SESSION_ERROR,
       cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
       message: ErrorsMessage.AUTH_INVALIDROL_ERROR
@@ -79,7 +79,7 @@ export const verificarUsuario = async (req, res, next) => {
     next()
   } else {
     logger.warn(ErrorsMessage.AUTH_INVALIDROL_ERROR);
-    CustomError.createCustomError({
+    throw CustomError.createCustomError({
       name: ErrorsName.SESSION_ERROR,
       cause: ErrorsCause.AUTH_INVALIDROL_CAUSE,
       message: ErrorsMessage.AUTH_INVALIDROL_ERROR

@@ -31,7 +31,7 @@ passport.use('register', new LocalStrategy({
         }
     } catch{
         logger.error(ErrorsMessage.USER_ADD_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.USER_ERROR,
             cause: ErrorsCause.USER_ADD_CAUSE,
             message: ErrorsMessage.USER_ADD_ERROR
@@ -71,7 +71,7 @@ passport.use('login', new LocalStrategy(
             }
         } catch {
             logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
-            CustomError.createCustomError({
+            throw CustomError.createCustomError({
                 name: ErrorsName.USER_ERROR,
                 cause: ErrorsCause.USER_WRONGDATA_CAUSE,
                 message: ErrorsMessage.USER_WRONGDATA_ERROR
@@ -104,7 +104,7 @@ passport.use('github', new GithubStrategy({
     
     } catch {
         logger.error(ErrorsMessage.USER_ADD_ERROR)
-        CustomError.createCustomError({
+        throw CustomError.createCustomError({
             name: ErrorsName.USER_ERROR,
             cause: ErrorsCause.USER_ADD_CAUSE,
             message: ErrorsMessage.USER_ADD_ERROR
