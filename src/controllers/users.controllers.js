@@ -1,7 +1,7 @@
 import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 import logger from "../winston.js";
-import { passwordForgetService, changePasswordService, getUserByIDService, changeRolService, uploadFilesService, updateLastConnectionService, deleteInactiveUsersService,getAllUsersService } from "../services/users.services.js";
+import { passwordForgetService, changePasswordService, getUserByIDService, changeRolService, uploadFilesService, updateLastConnectionService, deleteInactiveUsersService,getAllUsersService,deleteUserByIDService } from "../services/users.services.js";
 export const logoutController = async (req, res) => {
     try {
         const id = await req.session.userInfo._id
@@ -47,6 +47,20 @@ export const getAllUsersController = async (req,res)=>{
         });  
     }
 }
+export const deleteUserByIDController = async (req,res)=>{
+    try {
+        const id = req.params.uid
+        const deletedUser = await deleteUserByIDService(id)
+        res.json({ message: 'Usuario eliminado con exito', deletedUser })
+    } catch{
+        logger.error(ErrorsMessage.USER_WRONGDATA_ERROR)
+        CustomError.createCustomError({
+            name: ErrorsName.USER_ERROR,
+            cause: ErrorsCause.USER_WRONGDATA_CAUSE,
+            message: ErrorsMessage.USER_WRONGDATA_ERROR
+        });  
+    }
+}
 export const passwordForgetController = async (req, res) => {
     try {
         await passwordForgetService(req.body.email)
@@ -60,7 +74,6 @@ export const passwordForgetController = async (req, res) => {
         });
     }
 }
-
 export const changePasswordController = async (req, res) => {
     try {
         const response = await changePasswordService(req.params.uid, req.body.password, req.params.token)
@@ -154,6 +167,18 @@ export const deleteInactiveUsersController = async (req,res) => {
             name: ErrorsName.USER_ERROR,
             cause: ErrorsCause.USER_WRONGDATA_CAUSE,
             message: ErrorsMessage.USER_WRONGDATA_ERROR
+        });
+    }
+}
+export const writeUsersController = async (req, res) => {
+    try {
+        const userList = await getAllUsersService()
+        res.render('usersManagement', { "users": userList })
+    } catch {
+        throw CustomError.createCustomError({
+            name: ErrorsName.PRODUCT_ERROR,
+            cause: ErrorsCause.PRODUCT_EMPTYLIST_CAUSE,
+            message: ErrorsMessage.PRODUCT_EMPTYLIST_ERROR
         });
     }
 }

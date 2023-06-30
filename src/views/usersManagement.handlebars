@@ -1,0 +1,18 @@
+<div id="card-container" class="divUserList">
+    {{#if users.length}}
+    {{#each users}}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+<ul class="ulListUser"><li><span class="spanTitles">Nombre:</span>  {{first_name}} {{last_name}}</li>
+                <li><span class="spanTitles">Email:</span> {{email}}</li>
+                <li><span class="spanTitles">Edad:</span> {{age}}</li>
+                <li><span class="spanTitles">Rol:</span> {{rol}}</li>
+                <div class="divUserList2"><button class="btnUserRole" onclick="changeRol('{{_id}}')">User/Premium</button><button class="btnUserDel" onclick="deleteUser('{{_id}}')">Eliminar</button></div></ul>
+        </div>
+    </div>
+    {{/each}}
+    {{else}}
+    <p>No se encontraron productos</p>
+    {{/if}}
+
+<script src="js/usersManagement.js" type="text/javascript"></script>

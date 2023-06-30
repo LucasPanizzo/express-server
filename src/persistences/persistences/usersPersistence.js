@@ -23,6 +23,10 @@ export async function getAllUsers(){
     return await persistence.getAllUsers()
 }
 
+export async function deleteUserByID(userID){
+    return await persistence.deleteUserByID(userID)
+}
+
 export async function changeRol(userID,files){
     return await persistence.changeRol(userID,files)
 }

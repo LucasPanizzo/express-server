@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { logoutController, passwordForgetController, changePasswordController, changeUserRolController, uploadFilesController,getUserByIdController,deleteInactiveUsersController,getAllUsersController } from "../controllers/users.controllers.js";
+import { logoutController, passwordForgetController, changePasswordController, changeUserRolController, uploadFilesController,getUserByIdController,deleteInactiveUsersController,getAllUsersController,deleteUserByIDController } from "../controllers/users.controllers.js";
 import passport from "passport";
 import { upload } from "../middlewares/multer.js";
 
@@ -50,5 +50,7 @@ router.post("/:uid/documents", upload.fields([
 ]), uploadFilesController);
 
 router.get('/:uid',getUserByIdController)
+
+router.delete('/:uid',deleteUserByIDController)
 
 export default router

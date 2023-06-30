@@ -3,7 +3,7 @@ import { mockingProductsController } from "../controllers/products.controllers.j
 import { writeProductsController } from "../controllers/products.controllers.js";
 import { writeCartsController } from "../controllers/carts.controllers.js";
 import { chatControllers } from "../controllers/chats.controllers.js"
-import { recoveryPasswordViewController } from "../controllers/users.controllers.js";
+import { recoveryPasswordViewController,writeUsersController } from "../controllers/users.controllers.js";
 
 const router = Router()
 
@@ -28,6 +28,8 @@ router.get('/registerWrong',(req,res)=>{
 })
 
 router.get('/products',writeProductsController)
+
+router.get('/users',writeUsersController)
 
 router.get('/realtimeproducts',async(req,res)=>{
     res.render('realtimeproducts')

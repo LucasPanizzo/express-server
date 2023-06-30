@@ -53,20 +53,31 @@ export default class userManager {
     }
     async getAllUsers() {
         try {
-          const users = await usersModels.find();
-          const userList = users.map(el => new UsersSecureDTO(el));
-          return userList;
+            const users = await usersModels.find();
+            const userList = users.map(el => new UsersSecureDTO(el));
+            return userList;
         } catch {
-          logger.error(ErrorsMessage.USER_WRONGDATA_ERROR);
-          throw CustomError.createCustomError({
-            name: ErrorsName.USER_ERROR,
-            cause: ErrorsCause.USER_WRONGDATA_CAUSE,
-            message: ErrorsMessage.USER_WRONGDATA_ERROR
-          });
+            logger.error(ErrorsMessage.USER_WRONGDATA_ERROR);
+            throw CustomError.createCustomError({
+                name: ErrorsName.USER_ERROR,
+                cause: ErrorsCause.USER_WRONGDATA_CAUSE,
+                message: ErrorsMessage.USER_WRONGDATA_ERROR
+            });
         }
-      }
-      
-      
+    }
+    async deleteUserByID(userID) {
+        try {
+            const deletedUser = await usersModels.deleteOne({ _id: userID });
+            return deletedUser;
+        } catch {
+            logger.error(ErrorsMessage.USER_WRONGDATA_ERROR);
+            throw CustomError.createCustomError({
+                name: ErrorsName.USER_ERROR,
+                cause: ErrorsCause.USER_WRONGDATA_CAUSE,
+                message: ErrorsMessage.USER_WRONGDATA_ERROR
+            });
+        }
+    }
     async #generateRandomCode(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let code = '';
@@ -251,5 +262,5 @@ export default class userManager {
             });
         }
     }
-    
+
 }
