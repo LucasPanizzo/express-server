@@ -9,22 +9,27 @@
       <h6 class="card-subtitle mb-2 text-muted">${{productId.price}}</h6>
       <p class="card-text">{{productId.description}}</p>
       <p class="card-text">{{productId.category}}</p>
-                    <div class="carrito-item-cantidad d-flex pb-2 pt-3 align-items-center">
-                        <button onclick="quantityMod('-','{{productId._id}}',{{productId.price}})" class="carrito-item-cantidad-resta">-</button>
-                        <p class="mb-0" id="card-quantity-{{productId._id}}">{{quantity}}</p>
-                        <button onclick="quantityMod('+','{{productId._id}}',{{productId.price}})" class="carrito-item-cantidad-suma">+</button>
-                    </div>
+      <div class="carrito-item-cantidad d-flex pb-2 pt-3 align-items-center">
+        <button onclick="quantityMod('-','{{productId._id}}',{{productId.price}})"
+          class="carrito-item-cantidad-resta">-</button>
+        <p class="mb-0" id="card-quantity-{{productId._id}}">{{quantity}}</p>
+        <button onclick="quantityMod('+','{{productId._id}}',{{productId.price}})"
+          class="carrito-item-cantidad-suma">+</button>
+      </div>
 
       <button class="delete-butt" onclick="deleteProductInCart('{{productId._id}}')">Quitar del carrito</button>
     </div>
   </div>
   {{/each}}
-  <h2 >TOTAL:$<n id="total-price"></n></h2>
+  <h2>TOTAL:$<n id="total-price"></n>
+  </h2>
   <button id="purchase-button" onclick="purchaseFunction()">Terminar compra</button>
+   <div id="wallet_container"></div>
   {{else}}
   <h2 class="title-prod">Carrito vacio</h2>
   {{/if}}
-  
+
 </div>
 
+<script src="https://sdk.mercadopago.com/js/v2"></script>
 <script src="js/carts.js" type="text/javascript"></script>

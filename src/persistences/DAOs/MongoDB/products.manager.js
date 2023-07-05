@@ -4,6 +4,8 @@ import { mockingsModels } from "../../MongoDB/models/mockings.models.js"
 import CustomError from "../../../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../../../errors/errorMessages.js";
 import logger from "../../../winston.js";
+import nodemailer from 'nodemailer'
+import config from "../../../config.js";
 export default class ProductManager {
     async getProducts(limit, page, sort, query) {
         try {
@@ -66,7 +68,8 @@ export default class ProductManager {
                     });
                 }
             }
-        } catch {
+        } catch(error) {
+            console.log(error);
             logger.error(ErrorsMessage.PRODUCT_ADD_ERROR)
             throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,
@@ -100,7 +103,7 @@ export default class ProductManager {
                 });
             }
             if (owner.rol === "admin" || (owner.rol === "premium" && productToDelete.owner === owner.email)) {
-                if (owner.rol !== "admin") {
+                if (productToDelete.owner !== "Admin") {
                     const transport = nodemailer.createTransport({
                         service: 'gmail',
                         port: 587,
@@ -109,10 +112,9 @@ export default class ProductManager {
                             pass: config.GCOUNT[1]
                         }
                     });
-
                     await transport.sendMail({
                         from: "<lucas.panizzo99@gmail.com>",
-                        to: owner.email,
+                        to: productToDelete.owner,
                         subject: 'Producto Borrado',
                         html: `
                   <div>
@@ -121,7 +123,6 @@ export default class ProductManager {
                 `
                     });
                 }
-
                 const deletedProd = await productsModels.deleteOne({ _id: id });
                 return deletedProd;
             } else {
@@ -133,6 +134,7 @@ export default class ProductManager {
                 });
             }
         } catch (error) {
+            console.log(error);
             logger.error(ErrorsMessage.PRODUCT_WRONGID_ERROR);
             throw CustomError.createCustomError({
                 name: ErrorsName.PRODUCT_ERROR,

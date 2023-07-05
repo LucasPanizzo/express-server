@@ -1,36 +1,36 @@
 import mongoose from "mongoose";
 
 const usersSchema = new mongoose.Schema({
-    full_name:{
-        type:String
+    full_name: {
+        type: String
     },
-    first_name:{
+    first_name: {
         type: String,
-        required:true   
+        required: true
     },
-    last_name:{
+    last_name: {
         type: String,
-        required:true
+        required: true
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
-    password:{
-        type:String,
-        required:true
-    },  
-    age:{
-        type:Number
+    password: {
+        type: String,
+        required: true
     },
-    rol:{
-        type:String,
-        default:"user"
+    age: {
+        type: Number
     },
-    userCart:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"carts"
+    rol: {
+        type: String,
+        default: "user"
+    },
+    userCart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts"
     },
     tokenResetPassword: {
         type: String,
@@ -42,22 +42,22 @@ const usersSchema = new mongoose.Schema({
     },
     documents: {
         type: [
-          {
-            name: { type: String},
-            reference: {type: String}
-          }
+            {
+                name: { type: String },
+                reference: { type: String }
+            }
         ],
         required: false
-      },
-      lastConnection: {
+    },
+    lastConnection: {
         type: String,
         required: false,
         default: "Never"
-      }
-    
+    }
+
 });
 
-usersSchema.pre("findOne",function(next){
+usersSchema.pre("findOne", function (next) {
     this.populate("userCart")
     next()
 })

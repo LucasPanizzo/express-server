@@ -149,13 +149,13 @@ export const purchaseController = async (req, res) => {
     try {
         const currentSession = await currentSessionService(await req.session.userInfo)
         const email = currentSession.email
-        const cartID = req.params.cid
+        const cartID = currentSession.userCart._id
         const response = await purchaseService(cartID, email)
         const remainingProducts = response.productsNoStock
         if (remainingProducts.length != 0) {
-            res.json({ message: `Los siguientes productos no tienen stock suficiente para ser comprados: ${remainingProducts}` })
+            res.json({ message: `Los siguientes productos no tienen stock suficiente para ser comprados: ${remainingProducts}`,response })
         } else {
-            res.json({ message: `Compra realiza con éxito` })
+            res.json({ message: `Compra realiza con éxito`,response })
         }
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)

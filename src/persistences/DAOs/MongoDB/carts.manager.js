@@ -232,6 +232,7 @@ export default class cartManager {
     async purchaseProductsInCart(idCart, email) {
         try {
           const cart = await this.getCartByID(idCart);
+          console.log(cart,email);
           const productsInCart = cart.products;
           let prices = [];
           let productsNoStock = [];
@@ -261,7 +262,8 @@ export default class cartManager {
          if(productsStocked.length != 0){
             await this.#ticketGenerator(prices, email);}
          return {productsNoStock,productsStocked}
-        } catch{
+        } catch(error){
+            console.log(error);
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)
             throw CustomError.createCustomError({
                 name: ErrorsName.CART_ERROR,
