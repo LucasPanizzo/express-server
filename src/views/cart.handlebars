@@ -1,4 +1,4 @@
-<h1 class="title-prod">Carrito de compras:</h1>
+{{!-- <h1 class="title-prod">Carrito de compras:</h1>
 <button onclick="location.href='/products'">Ir al inicio</button>
 <div id="card-container" class="card-container">
   {{#if products.length}}
@@ -24,11 +24,92 @@
   <h2>TOTAL:$<n id="total-price"></n>
   </h2>
   <button id="purchase-button" onclick="purchaseFunction()">Terminar compra</button>
-   <div id="wallet_container"></div>
   {{else}}
   <h2 class="title-prod">Carrito vacio</h2>
   {{/if}}
 
+</div> --}}
+
+<div class="container px-3 my-5 clearfix">
+  <!-- Shopping cart table -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Shopping Cart</h2>
+    </div>
+    <div class="card-body">
+      {{#if products.length}}
+      <div class="table-responsive">
+        <table class="table table-bordered m-0">
+          <thead>
+            <tr>
+              <!-- Set columns width -->
+              <th class="text-center py-3 px-4" style="min-width: 400px;">Detales del producto</th>
+              <th class="text-right py-3 px-4" style="width: 100px;">Precio</th>
+              <th class="text-center py-3 px-4" style="width: 120px;">Cantidad</th>
+              <th class="text-center align-middle py-3 px-0" style="width: 40px;"><a href="#"
+                  class="shop-tooltip float-none text-light" title="" data-original-title="Clear cart"><i
+                    class="ino ion-md-trash"></i></a></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each products}}
+            <tr data-price="{{productId.price}}" data-quantity="{{quantity}}" data-id="{{productId._id}}"
+              class="productCard">
+              <td class="p-4">
+                <div class="media align-items-center">
+                  <img src="" class="d-block ui-w-40 ui-bordered mr-4" alt="">
+                  <div class="media-body">
+                    <a href="#" class="d-block text-dark">{{productId.title}}</a>
+                    <small>
+                      <span class="text-muted">Categoría:</span> {{productId.category}}&nbsp;
+                      <span class="text-muted">Descripción: </span> {{productId.description}} &nbsp;
+                    </small>
+                  </div>
+                </div>
+              </td>
+              <td class="text-right font-weight-semibold align-middle p-4">${{productId.price}}</td>
+              <td class="align-middle p-4">
+                <div class="carrito-item-cantidad d-flex pb-2 pt-3 align-items-center">
+                  <button onclick="quantityMod('-','{{productId._id}}',{{productId.price}})"
+                    class="carrito-item-cantidad-resta">-</button>
+                  <p class="mb-0" id="card-quantity-{{productId._id}}">{{quantity}}</p>
+                  <button onclick="quantityMod('+','{{productId._id}}',{{productId.price}})"
+                    class="carrito-item-cantidad-suma">+</button>
+                </div>
+              <td class="text-center align-middle px-0"><a href="#" class="shop-tooltip close float-none text-danger"
+                  title="" data-original-title="Remove" onclick="deleteProductInCart('{{productId._id}}')">×</a></td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      <!-- / Shopping cart table -->
+
+      <div class="d-flex flex-wrap justify-content-between align-items-center pb-4">
+        <div class="mt-4">
+          <label class="text-muted font-weight-normal">Promocode</label>
+          <input type="text" placeholder="ABC" class="form-control">
+        </div>
+        <div class="d-flex">
+          <div class="text-right mt-4">
+            <label class="text-muted font-weight-normal m-0">Precio Total</label>
+            <div class="text-large"><strong>$<n id="total-price"></n></strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="float-right">
+        <button type="button" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3"
+          onclick="location.href='/products'">Volver a la tienda</button>
+        <button type="button" class="btn btn-lg btn-primary mt-2" onclick="purchaseFunction()">Checkout</button>
+      </div>
+      {{else}}
+      <h2 class="title-prod">Carrito vacio</h2>
+      <button type="button" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3"
+        onclick="location.href='/products'">Volver a la tienda</button>
+      {{/if}}
+    </div>
+  </div>
 </div>
 
 <script src="https://sdk.mercadopago.com/js/v2"></script>

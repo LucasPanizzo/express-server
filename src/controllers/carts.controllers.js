@@ -4,6 +4,10 @@ import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 import logger from "../winston.js";
 
+
+
+
+
 export const addCartController = async (req, res) => {
     try {
         await addCartService()
@@ -151,12 +155,10 @@ export const purchaseController = async (req, res) => {
         const email = currentSession.email
         const cartID = currentSession.userCart._id
         const response = await purchaseService(cartID, email)
-        const remainingProducts = response.productsNoStock
-        if (remainingProducts.length != 0) {
-            res.json({ message: `Los siguientes productos no tienen stock suficiente para ser comprados: ${remainingProducts}`,response })
-        } else {
-            res.json({ message: `Compra realiza con éxito`,response })
-        }
+        const responseCopy = Object.assign({}, response);
+        responseCopy.ticket = responseCopy.ticket.toObject();
+        console.log(responseCopy);
+        res.render('successBuy', { "response": responseCopy });
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)
         throw CustomError.createCustomError({

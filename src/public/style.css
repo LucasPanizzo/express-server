@@ -1,25 +1,78 @@
-.card-container{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-}
-.card{
-    margin: 10px;
-}
-.card-body{
-    height: fit-content;
-}
-.title-prod{
-    display: block;
-    width: 100%;
-}
-.chatLayout{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-.oculto{
-    display: none;
+/* ---------------login page style-------------------*/
+.background-radial-gradient {
+  background-color: hsl(218deg, 41%, 15%);
+  background-image: radial-gradient(650px circle at 0% 0%, hsl(218deg, 41%, 35%) 15%, hsl(218deg, 41%, 30%) 35%, hsl(218deg, 41%, 20%) 75%, hsl(218deg, 41%, 19%) 80%, transparent 100%), radial-gradient(1250px circle at 100% 100%, hsl(218deg, 41%, 45%) 15%, hsl(218deg, 41%, 30%) 35%, hsl(218deg, 41%, 20%) 75%, hsl(218deg, 41%, 19%) 80%, transparent 100%);
 }
 
+#radius-shape-1 {
+  height: 220px;
+  width: 220px;
+  top: -60px;
+  left: -130px;
+  background: radial-gradient(#44006b, #ad1fff);
+  overflow: hidden;
+}
+
+#radius-shape-2 {
+  border-radius: 38% 62% 63% 37%/70% 33% 67% 30%;
+  bottom: -60px;
+  right: -110px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(#44006b, #ad1fff);
+  overflow: hidden;
+}
+
+.bg-glass {
+  background-color: hsla(0deg, 0%, 100%, 0.9) !important;
+  backdrop-filter: saturate(200%) blur(25px);
+}
+
+#div-col1 {
+  z-index: 10;
+}
+
+#title {
+  color: hsl(218deg, 81%, 95%);
+}
+
+.underText {
+  color: hsl(218deg, 81%, 85%);
+}
+
+#subTitle {
+  color: hsl(218deg, 81%, 75%);
+}
+
+#login-body {
+  height: 100vh;
+}
+
+/*--------------------CART PAGE STYLE----------------*/
+body {
+  margin-top: 20px;
+  background: #eee;
+}
+
+.ui-w-40 {
+  width: 40px !important;
+  height: auto;
+}
+
+.card {
+  box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.08);
+}
+
+.ui-product-color {
+  display: inline-block;
+  overflow: hidden;
+  margin: 0.144em;
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 10rem;
+  -webkit-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset;
+  vertical-align: middle;
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -232,7 +232,6 @@ export default class cartManager {
     async purchaseProductsInCart(idCart, email) {
         try {
           const cart = await this.getCartByID(idCart);
-          console.log(cart,email);
           const productsInCart = cart.products;
           let prices = [];
           let productsNoStock = [];
@@ -259,9 +258,9 @@ export default class cartManager {
             }
           }
          // Checkeo si existe algún producto con stock, para no envíar tickets vacios a la DB.
-         if(productsStocked.length != 0){
-            await this.#ticketGenerator(prices, email);}
-         return {productsNoStock,productsStocked}
+         if(productsStocked.length != 0){}
+         const ticket = await this.#ticketGenerator(prices, email);
+         return {productsNoStock,productsStocked,ticket}
         } catch(error){
             console.log(error);
             logger.error(ErrorsMessage.CART_WRONGID_ERROR)

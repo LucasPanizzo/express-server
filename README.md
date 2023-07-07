@@ -22,10 +22,18 @@ products:
 
 users:
 
+"/api/users/"(metodo get): Trae todos los usuarios existentes.
+"/api/users/"(metodo delete): Elimina de la base de datos, todos los usuarios que no se hayan logeado en las últimas 48hs.
 "/api/users/register": Registra un nuevo usuario.
+"/api/users/passwordForget": Envía un mail al email puesto en una alerta para recuperar la contraseña.
+"/api/users/changePassword/:uid/:token": Cambia la contraseña del usuario.
+"/api/users/changeRol/:uid": Cambia el rol del usuario entre user o premium.
 "/api/users/login": Logea el usuario seleccionado.
 "/api/users/logout": Destruye la session.
 "/api/users/githubRegister": Registra un usuario de github.
+"/api/users/:uid/documents": Controlador de la subida de archivos para la verificación de user a premium.
+"/api/users/:uid"(metodo get): Devuelve un usuario según el ID.
+"/api/users/:uid"(metodo delete): Elimina un usuario según el ID.
 
 sessions:
 "/api/sessions/current: Trae la información de la session actual.
@@ -37,10 +45,17 @@ views:
 "/loginWrong": fallo de login.
 "/registerWrong": fallo de registro.
 "/products": pagina contendero de productos.
+"/users": Panel de control de usuarios
 "/realtimeproducts": crea productos y los visualiza en tiempo real.
 "/chathabdlebars": chat funcional con handlebars
 "/cart": Carrito de compras ligado a la session
 "/mockingproducts": Crea 100 mockings con el modelo de productos.
+"/recoveryPassword/:uid/:token": Recuperar contraseña.
 
 logger:
 "/loggerTest": Ejecuta todos los loggers.
+
+payments:
+"/": Crea una preferencia de pago para mercadoPago.
+"/success": Vista de operación exitosa para una compra.
+"/fail": Vista de operación fallida para una compra.

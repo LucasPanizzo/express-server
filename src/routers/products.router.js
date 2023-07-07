@@ -7,17 +7,17 @@ const router = Router()
 router.get('/', getProductsController)
 
 router.post('/',
-// verificarAdminOPremium,
+verificarAdminOPremium,
 addProductController)
 
 router.get('/:idProduct',getProductsByIDController)
 
 router.delete('/:idProduct',
-//verificarAdminOPremium,
+verificarAdminOPremium,
 deleteProductController)
 
 router.put('/:idProduct',
-//verificarAdmin,
+verificarAdmin,
 updateProductController)
 
 export default router
