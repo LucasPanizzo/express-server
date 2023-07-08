@@ -1,7 +1,7 @@
 // Imports
 import express from 'express'
 import { Server } from 'socket.io'
-import handlebars from 'express-handlebars'
+import exphbs from 'express-handlebars';
 import views from './routers/views.router.js'
 import products from './routers/products.router.js'
 import carts from './routers/carts.router.js'
@@ -85,9 +85,17 @@ socketServer.on('connection', async (socket) => {
 })
 
 // Handlebars engine
-app.engine('handlebars', handlebars.engine())
-app.set('views', __dirname + '/views')
-app.set('view engine', 'handlebars')
+// Imports
+
+const hbs = exphbs.create({
+  partialsDir: __dirname + '/views/layouts'
+});
+
+app.engine('handlebars', hbs.engine);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'handlebars');
+// Resto del código
+
 // General APP declarations
 app.use(
     session({

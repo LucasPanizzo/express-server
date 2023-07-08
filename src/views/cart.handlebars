@@ -1,35 +1,4 @@
-{{!-- <h1 class="title-prod">Carrito de compras:</h1>
-<button onclick="location.href='/products'">Ir al inicio</button>
-<div id="card-container" class="card-container">
-  {{#if products.length}}
-  {{#each products}}
-  <div class="card" style="width: 18rem;" data-quantity="{{quantity}}" data-price="{{productId.price}}">
-    <div class="card-body">
-      <h5 class="card-title">{{productId.title}}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">${{productId.price}}</h6>
-      <p class="card-text">{{productId.description}}</p>
-      <p class="card-text">{{productId.category}}</p>
-      <div class="carrito-item-cantidad d-flex pb-2 pt-3 align-items-center">
-        <button onclick="quantityMod('-','{{productId._id}}',{{productId.price}})"
-          class="carrito-item-cantidad-resta">-</button>
-        <p class="mb-0" id="card-quantity-{{productId._id}}">{{quantity}}</p>
-        <button onclick="quantityMod('+','{{productId._id}}',{{productId.price}})"
-          class="carrito-item-cantidad-suma">+</button>
-      </div>
-
-      <button class="delete-butt" onclick="deleteProductInCart('{{productId._id}}')">Quitar del carrito</button>
-    </div>
-  </div>
-  {{/each}}
-  <h2>TOTAL:$<n id="total-price"></n>
-  </h2>
-  <button id="purchase-button" onclick="purchaseFunction()">Terminar compra</button>
-  {{else}}
-  <h2 class="title-prod">Carrito vacio</h2>
-  {{/if}}
-
-</div> --}}
-
+{{> navbar}}
 <div class="container px-3 my-5 clearfix">
   <!-- Shopping cart table -->
   <div class="card">
@@ -57,7 +26,7 @@
               class="productCard">
               <td class="p-4">
                 <div class="media align-items-center">
-                  <img src="" class="d-block ui-w-40 ui-bordered mr-4" alt="">
+                  <img src="{{productId.thumbnails}}" class="d-block ui-w-40 ui-bordered mr-4" alt="">
                   <div class="media-body">
                     <a href="#" class="d-block text-dark">{{productId.title}}</a>
                     <small>

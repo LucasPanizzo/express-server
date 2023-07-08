@@ -1,4 +1,4 @@
-<h2>Crear usuario</h2>
+{{!-- <h2>Crear usuario</h2>
 
 <form action="/api/users/register" method="POST">
     Nombre:<input type="text" name="first_name" id="first_name" required>
@@ -8,4 +8,81 @@
     Contraseña:<input type="password" name="password" id="password" required>
     <input type="submit" value="Registrar">
 </form>
-<button class="login" onclick="location.href='/api/users/githubRegister'">Registrate con Github</button>
+<button class="login" onclick="location.href='/api/users/githubRegister'">Registrate con Github</button> --}}
+
+<section class="background-radial-gradient overflow-hidden" id="login-body">
+
+
+    <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+        <div class="row gx-lg-5 align-items-center mb-5">
+            <div class="col-lg-6 mb-5 mb-lg-0" id="div-col1">
+                <h1 class="my-5 display-5 fw-bold ls-tight" id="title">
+                    Las mejores ofertas <br />
+                    <span id="subTitle">en tecnología</span>
+                </h1>
+                <p class="mb-4 opacity-70 underText">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                    Temporibus, expedita iusto veniam atque, magni tempora mollitia
+                    dolorum consequatur nulla, neque debitis eos reprehenderit quasi
+                    ab ipsum nisi dolorem modi. Quos?
+                </p>
+            </div>
+
+            <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+                <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
+                <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
+
+                <div class="card bg-glass">
+                    <div class="card-body px-4 py-5 px-md-5">
+                        <form action="/api/users/register" method="POST">
+                            <!-- Email input -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <input type="text" class="form-control" input type="text" name="first_name"
+                                            id="first_name" required />
+                                        <label class="form-label" for="first_name">First name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <input type="text" class="form-control" input type="text" name="last_name"
+                                            id="last_name" required />
+                                        <label class="form-label" for="last_name">Last name</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Password input -->
+                            <div class="form-outline mb-4">
+                                <input class="form-control" type="email" name="email" id="email" required />
+                                <label class="form-label" for="email">Email</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input class="form-control" type="number" name="age" id="age" required />
+                                <label class="form-label" for="age">Edad</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input class="form-control" type="password" name="password" id="password" required />
+                                <label class="form-label" for="password">Contraseña</label>
+                            </div>
+
+                            <!-- Submit button -->
+                            <button type="submit" class="btn btn-primary btn-block mb-4">
+                                Registrarse
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-block mb-4" onclick="location.href='/'">
+                                Volver al Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/login.js"></script>

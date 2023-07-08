@@ -94,11 +94,21 @@ export const updateProductController = async (req, res) => {
 
 export const writeProductsController = async (req, res) => {
     try {
+        const user = await currentSessionService(await req.session.userInfo)
         const { limit, page, sort, ...query } = req.query
         const products = await getProductsService(limit, page, sort, query)
+        function createArray(end) {
+            const result = [];
+            for (let i = 1; i <= end; i++) {
+                result.push(i);
+            }
+            return result;
+        }
+        const totalPages = createArray(products.info.totalpages)
         const productsList = await products.payload.map(product => Object.assign({}, product._doc))
-        res.render('index', { "session": req.session.userInfo, "products": productsList })
+        res.render('index', { "session": req.session.userInfo, "products": productsList,"pages":totalPages })
     } catch {
+        logger.error(ErrorsMessage.PRODUCT_EMPTYLIST_ERROR)
         throw CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,
             cause: ErrorsCause.PRODUCT_EMPTYLIST_CAUSE,
