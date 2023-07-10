@@ -1,4 +1,4 @@
-{{> navbar}}
+{{!-- {{> navbar}}
 <h3>Perfil</h3>
 
 <div id="profileInfo">
@@ -6,4 +6,54 @@
     <p>Apellido:{{last_name}}</p>
     <p>Email:{{email}}</p>
     <p>Edad:{{age}}</p>
+</div> --}}
+
+{{> navbar}}
+<div class="container px-3 my-5 clearfix">
+    <!-- Shopping cart table -->
+    <div class="card">
+        <div class="card-header">
+            <h2>User Panel</h2>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered m-0">
+                    <thead>
+                        <tr>
+                            <!-- Set columns width -->
+                            <th class="text-center py-3 px-4" style="min-width: 400px;">Detalles del usuario</th>
+                            <th class="text-center align-middle py-3 px-0" style="width: 40px;">Cambiar contraseña</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="productCard">
+                            <td class="p-4">
+                                <div class="media align-items-center">
+                                    <img src="{{productId.thumbnails}}" class="d-block ui-w-40 ui-bordered mr-4" alt="">
+                                    <div class="media-body">
+                                        <a href="#" class="d-block text-dark">{{first_name}} {{last_name}}</a>
+                                        <small>
+                                            <span class="text-muted">Email:</span> <span id="email">{{email}}</span>&nbsp;
+                                            <span class="text-muted">Rol: </span> {{rol}}
+                                            &nbsp;
+                                            <span class="text-muted">Edad: </span> {{age}}
+                                            &nbsp;
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center align-middle px-0">
+                                <button type="submit" id="btnMailing">
+                                    enviar
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/profile.js"></script>

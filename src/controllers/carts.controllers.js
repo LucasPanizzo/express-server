@@ -3,6 +3,7 @@ import { currentSessionService } from "../services/users.services.js"
 import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 import logger from "../winston.js";
+import { adminChecker } from "../public/js/adminChecker.js";
 
 
 
@@ -175,7 +176,9 @@ export const writeCartsController = async (req, res) => {
         const userCartID = session.userCart
         const cart = await getCartByIDService(userCartID)
         const products = cart[0].products
-        res.render('cart', { "products": products })
+        const rol = session.rol
+        let isAdmin = adminChecker(rol)
+        res.render('cart', { "products": products,isAdmin })
     } catch {
         logger.error(ErrorsMessage.CART_WRONGID_ERROR)
         throw CustomError.createCustomError({

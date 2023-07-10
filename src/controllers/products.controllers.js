@@ -3,6 +3,7 @@ import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 import logger from "../winston.js";
 import { currentSessionService } from "../services/users.services.js";
+import { adminChecker } from "../public/js/adminChecker.js";
 
 export const getProductsController = async (req, res) => {
     try {
@@ -97,6 +98,8 @@ export const writeProductsController = async (req, res) => {
         const user = await currentSessionService(await req.session.userInfo)
         const { limit, page, sort, ...query } = req.query
         const products = await getProductsService(limit, page, sort, query)
+        const rol = user.rol
+        let isAdmin = adminChecker(rol)
         function createArray(end) {
             const result = [];
             for (let i = 1; i <= end; i++) {
@@ -106,7 +109,7 @@ export const writeProductsController = async (req, res) => {
         }
         const totalPages = createArray(products.info.totalpages)
         const productsList = await products.payload.map(product => Object.assign({}, product._doc))
-        res.render('index', { "session": req.session.userInfo, "products": productsList,"pages":totalPages })
+        res.render('index', { "session": req.session.userInfo, "products": productsList,"pages":totalPages,isAdmin })
     } catch {
         logger.error(ErrorsMessage.PRODUCT_EMPTYLIST_ERROR)
         throw CustomError.createCustomError({

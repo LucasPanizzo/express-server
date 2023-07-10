@@ -68,7 +68,7 @@ socketServer.on('connection', async (socket) => {
     //Funcion que elimina un producto en especifico de la DB.
     socket.on('eliminacionProducto', async (id) => {
         await deleteProductService(id)
-        const products = await getProductsService()
+        const products = await getProductsService(60)
         const productsList = products.payload
         socketServer.emit('writeProducts', productsList)
     })

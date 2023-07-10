@@ -1,7 +1,8 @@
 import CustomError from "../errors/newError.js";
 import { ErrorsCause, ErrorsMessage, ErrorsName } from "../errors/errorMessages.js";
 import logger from "../winston.js";
-import { passwordForgetService, changePasswordService, getUserByIDService, changeRolService, uploadFilesService, updateLastConnectionService, deleteInactiveUsersService,getAllUsersService,deleteUserByIDService } from "../services/users.services.js";
+import { passwordForgetService, changePasswordService, getUserByIDService, changeRolService, uploadFilesService, updateLastConnectionService, deleteInactiveUsersService,getAllUsersService,deleteUserByIDService, currentSessionService } from "../services/users.services.js";
+import { adminChecker } from "../public/js/adminChecker.js";
 export const logoutController = async (req, res) => {
     try {
         const id = await req.session.userInfo._id
@@ -172,8 +173,11 @@ export const deleteInactiveUsersController = async (req,res) => {
 }
 export const writeUsersController = async (req, res) => {
     try {
+        const user = await currentSessionService(req.session.userInfo)
+        const rol = user.rol
+        const isAdmin = adminChecker(rol)
         const userList = await getAllUsersService()
-        res.render('usersManagement', { "users": userList })
+        res.render('usersManagement', { "users": userList,isAdmin })
     } catch {
         throw CustomError.createCustomError({
             name: ErrorsName.PRODUCT_ERROR,

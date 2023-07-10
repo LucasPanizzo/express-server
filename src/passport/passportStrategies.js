@@ -48,6 +48,7 @@ passport.use('login', new LocalStrategy(
         try {
             if (email === config.ADMINMAIL && password === config.ADMINPASSWORD) {
                 const userAdmin = {
+                    _id: mongoose.Types.ObjectId(),
                     first_name: "Admin",
                     last_name: "CoderHouse",
                     email: email,
@@ -95,7 +96,6 @@ passport.use('github', new GithubStrategy({
                 password: " ",
                 userCart: addedCart._id
             }
-    
             const newUser = await usersModels.create(userData);
             done(null, newUser)
         } else {
